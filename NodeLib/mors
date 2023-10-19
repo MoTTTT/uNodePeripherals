@@ -1,0 +1,9 @@
+	RX_code		( ) interrupt 4 using 3	/* SIO1 Interrupt 	*/
+{
+	RX_busy= 1;
+	TR0=	1;				/* START TIMEOUT CLOCK	*/
+	RI=	0;				/* RESET RI		*/
+	TH0=	0x00;				/* RESET T0		*/
+	frame[ ram_index ]= S0BUF;
+	ram_index++;
+}

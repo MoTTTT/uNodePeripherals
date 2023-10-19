@@ -1,0 +1,249 @@
+
+
+    Bill of Materials                                              LIGHT.S01
+
+                          Tango-Schematic Report Header
+
+    Quantity  Type              Value             Ref Designators
+    ========================================================================
+
+         1    4N26N                               U7
+         1    8255                                U5
+         1    BRIDGE            VAL               BR1
+         8    CAP               VAL               C1,C2,C3,C4,C5,C6,C7,C8
+         1    DB14M                               P1
+         1    DB2F                                J4
+         2    DB3M                                J2,J3
+         1    DB6M                                J1
+         4    FUSE              VAL               F1,F2,F3,F4
+         1    LM7805CTB         VAL               U3
+         4    MOC3022N                            U1,U2,U4,U6
+         1    NPN               2N2222            Q5
+        12    RES               1K                R1,R2,R4,R5,R6,R8,R9,R10,
+                                                  R12,R15,R16,R19
+         8    RES               VAL               R3,R7,R11,R13,R14,R17,R18,
+                                                  R20
+         4    TRIAC             BT136             Q1,Q2,Q3,Q4
+         1    XFMRI             VAL               T1
+    
+    Total Parts: 51
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    03-Jun-92  00:44                                                 Page  1
+
+    Cross Reference                                                LIGHT.S01
+
+                          Tango-Schematic Report Header
+
+    New Ref Des      Section        Location         Old Ref Des
+    ========================================================================
+
+    BR1              LIGHT.S01    @ ( 7.070, 3.845)  [LIGHT] BR1
+    C1               LIGHT.S01    @ ( 5.253, 6.045)  [LIGHT] C?
+    C2               LIGHT.S01    @ ( 5.253, 5.045)  [LIGHT] C?
+    C3               LIGHT.S01    @ ( 5.253, 4.045)  [LIGHT] C?
+    C4               LIGHT.S01    @ ( 7.703, 3.995)  [LIGHT] C4
+    C5               LIGHT.S01    @ ( 8.803, 3.995)  [LIGHT] C5
+    C6               LIGHT.S01    @ ( 1.428, 3.620)  [LIGHT] C6
+    C7               LIGHT.S01    @ ( 1.878, 3.620)  [LIGHT] C7
+    C8               LIGHT.S01    @ ( 5.253, 3.045)  [LIGHT] C?
+    F1               LIGHT.S01    @ ( 6.280, 6.320)  [LIGHT] F1
+    F2               LIGHT.S01    @ ( 6.280, 6.220)  [LIGHT] F2
+    F3               LIGHT.S01    @ ( 6.280, 6.120)  [LIGHT] F3
+    F4               LIGHT.S01    @ ( 6.280, 6.020)  [LIGHT] F4
+    J1               LIGHT.S01    @ ( 6.865, 5.664)  [LIGHT] J1
+    J2               LIGHT.S01    @ ( 6.890, 5.039)  [LIGHT] J2
+    J3               LIGHT.S01    @ ( 0.620, 4.164)  [LIGHT] J3
+    J4               LIGHT.S01    @ ( 0.620, 3.564)  [LIGHT] J4
+    P1               LIGHT.S01    @ ( 0.584, 4.814)  [LIGHT] P1
+    Q1               LIGHT.S01    @ ( 4.878, 5.845)  [LIGHT] Q?
+    Q2               LIGHT.S01    @ ( 4.878, 4.845)  [LIGHT] Q?
+    Q3               LIGHT.S01    @ ( 4.878, 3.845)  [LIGHT] Q?
+    Q4               LIGHT.S01    @ ( 4.878, 2.845)  [LIGHT] Q?
+    Q5               LIGHT.S01    @ ( 8.670, 2.520)  [LIGHT] Q5
+    R1               LIGHT.S01    @ ( 4.370, 5.845)  [LIGHT] R?
+    R10              LIGHT.S01    @ ( 4.653, 3.845)  [LIGHT] R?
+    R11              LIGHT.S01    @ ( 5.253, 3.545)  [LIGHT] R?
+    R12              LIGHT.S01    @ ( 4.795, 3.493)  [LIGHT] R?
+    R13              LIGHT.S01    @ ( 7.528, 2.945)  [LIGHT] R13
+    R14              LIGHT.S01    @ ( 8.828, 2.945)  [LIGHT] R14
+    R15              LIGHT.S01    @ ( 4.370, 2.845)  [LIGHT] R?
+    R16              LIGHT.S01    @ ( 4.653, 2.845)  [LIGHT] R?
+    R17              LIGHT.S01    @ ( 7.920, 2.789)  [LIGHT] R17
+    R18              LIGHT.S01    @ ( 5.253, 2.545)  [LIGHT] R?
+    R19              LIGHT.S01    @ ( 4.795, 2.493)  [LIGHT] R?
+    R2               LIGHT.S01    @ ( 4.653, 5.845)  [LIGHT] R?
+    R20              LIGHT.S01    @ ( 6.870, 2.464)  [LIGHT] R20
+    R3               LIGHT.S01    @ ( 5.253, 5.545)  [LIGHT] R?
+    R4               LIGHT.S01    @ ( 4.795, 5.493)  [LIGHT] R?
+    R5               LIGHT.S01    @ ( 4.370, 4.845)  [LIGHT] R?
+    R6               LIGHT.S01    @ ( 4.653, 4.845)  [LIGHT] R?
+    R7               LIGHT.S01    @ ( 5.253, 4.545)  [LIGHT] R?
+    R8               LIGHT.S01    @ ( 4.795, 4.493)  [LIGHT] R?
+    R9               LIGHT.S01    @ ( 4.370, 3.845)  [LIGHT] R?
+    T1               LIGHT.S01    @ ( 6.223, 3.814)  [LIGHT] T1
+    U1               LIGHT.S01    @ ( 4.224, 5.489)  [LIGHT] U?
+    U2               LIGHT.S01    @ ( 4.224, 4.489)  [LIGHT] U?
+    U3               LIGHT.S01    @ ( 7.890, 4.040)  [LIGHT] U3
+    U4               LIGHT.S01    @ ( 4.224, 3.489)  [LIGHT] U?
+    U5               LIGHT.S01    @ ( 2.090, 2.589)  [LIGHT] U5
+    U6               LIGHT.S01    @ ( 4.224, 2.489)  [LIGHT] U?
+
+                          Tango-Schematic Report Footer
+
+    03-Jun-92  00:44                                                 Page  1
+
+    Cross Reference                                                LIGHT.S01
+
+                          Tango-Schematic Report Header
+
+    New Ref Des      Section        Location         Old Ref Des
+    ========================================================================
+
+    U7               LIGHT.S01    @ ( 7.208, 2.435)  [LIGHT] U7
+    
+    Total Parts: 51
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    03-Jun-92  00:44                                                 Page  2
+
+    Cross Reference                                                LIGHT.S01
+
+                          Tango-Schematic Report Header
+
+    New Net Name      Old Net Name
+    ========================================================================
+
+    
+    Total Nets: 0
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    03-Jun-92  00:44                                                 Page  3

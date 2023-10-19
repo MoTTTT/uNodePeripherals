@@ -1,0 +1,146 @@
+C51 COMPILER V3.40,  SIO1                                                                  17/04/97  20:46:22  PAGE 1   
+
+
+DOS C51 COMPILER V3.40, COMPILATION OF MODULE SIO1
+OBJECT MODULE PLACED IN SIO1.OBJ
+COMPILER INVOKED BY: C:\C51\BIN\C51.EXE SIO1.C
+
+stmt level    source
+
+   1          /************************************************************************/
+   2          /*		SIO1.C : IIC bus include file				*/
+   3          /*		M.J.Colley '92						*/
+   4          /************************************************************************/
+   5          
+   6          #define		RTC_R		0xA1		/* PCF8583 read		*/
+   7          #define		RTC_W		0xA0		/* PCF8583 write	*/
+   8          
+   9          #define		NA_O_NI_AA_CRO		0xD5
+  10          #define		NA_NO_NI_AA_CRO		0xC5
+  11          #define		NA_NO_NI_NAA_CRO	0xC1
+  12          #define		A_NO_NI_AA_CRO		0xE5
+  13          
+  14          sbit		P1_6=	0x96;
+  15          sbit		P1_7=	0x97;
+  16          
+  17          idata	char	set[2];
+  18          idata	char	numbyte_mst;
+  19          idata	char	sla;
+  20          idata	char	*td_ptr;
+  21          idata	char	*rd_ptr;
+  22          idata	char	l_bak;
+  23          idata	char	*t_ptr;
+  24          idata	char	*r_ptr;
+  25          
+  26          	SIO1_int	( ) interrupt 5 using 1	/* IIC Bus Interrupt	*/
+  27          {	
+  28   1      	switch	( S1STA )
+*** ERROR 202 IN LINE 28 OF SIO1.C: 'S1STA': undefined identifier
+  29   1      	{
+  30   2      	case(0x00):				/* Bus Error		*/
+  31   2      		S1CON=	NA_O_NI_AA_CRO;		/* Clear SI, Gen STOP	*/
+*** ERROR 202 IN LINE 31 OF SIO1.C: 'S1CON': undefined identifier
+  32   2      		break;
+  33   2      	case(0x08):				/* START cond TX	*/
+  34   2      	case(0x10):				/* Repeated START TX	*/ 
+  35   2      		S1DAT=	sla;			/* Store Slave Addr+ R/W*/
+*** ERROR 202 IN LINE 35 OF SIO1.C: 'S1DAT': undefined identifier
+  36   2      		S1CON=	NA_NO_NI_AA_CRO;	/* Clear SI		*/
+*** ERROR 202 IN LINE 36 OF SIO1.C: 'S1CON': undefined identifier
+  37   2      		l_bak=	numbyte_mst;		/* Save Data Length	*/
+  38   2      		t_ptr=	td_ptr;			/* Save TX base ptr	*/
+  39   2      		r_ptr=	rd_ptr;			/* Save Rx base ptr	*/
+  40   2      		break;
+  41   2      	case(0x18):
+  42   2      		S1DAT=	*t_ptr;			/* Store first char	*/
+*** ERROR 202 IN LINE 42 OF SIO1.C: 'S1DAT': undefined identifier
+  43   2      		S1CON=	NA_NO_NI_AA_CRO;	/* Clear SI, Set AA	*/
+*** ERROR 202 IN LINE 43 OF SIO1.C: 'S1CON': undefined identifier
+  44   2      		t_ptr++;
+  45   2      		break;
+  46   2      	case(0x20):
+  47   2      		S1CON=	NA_O_NI_AA_CRO;		/* Set STOP, Clear SI	*/
+*** ERROR 202 IN LINE 47 OF SIO1.C: 'S1CON': undefined identifier
+  48   2      		break;
+  49   2      	case(0x28):
+  50   2      		numbyte_mst--;
+  51   2      		if	( numbyte_mst )
+  52   2      		{
+C51 COMPILER V3.40,  SIO1                                                                  17/04/97  20:46:22  PAGE 2   
+
+  53   3      			S1DAT=	*t_ptr;
+*** ERROR 202 IN LINE 53 OF SIO1.C: 'S1DAT': undefined identifier
+  54   3      			S1CON=	NA_NO_NI_AA_CRO;/* Clear SI, Set AA	*/
+*** ERROR 202 IN LINE 54 OF SIO1.C: 'S1CON': undefined identifier
+  55   3      			t_ptr++;
+  56   3      		}
+  57   2      		else	S1CON=	NA_O_NI_AA_CRO;	/* Set STOP, Clear SI	*/
+*** ERROR 202 IN LINE 57 OF SIO1.C: 'S1CON': undefined identifier
+  58   2      		break;
+  59   2      	case(0x30):
+  60   2      		S1CON=	NA_O_NI_AA_CRO;		/* Set STOP, Clear SI	*/
+*** ERROR 202 IN LINE 60 OF SIO1.C: 'S1CON': undefined identifier
+  61   2      		break;
+  62   2      	case(0x38):
+  63   2      		S1CON=	A_NO_NI_AA_CRO;		/* Set START		*/
+*** ERROR 202 IN LINE 63 OF SIO1.C: 'S1CON': undefined identifier
+  64   2      		numbyte_mst=	l_bak;
+  65   2      		break;
+  66   2      	case(0x40):
+  67   2      		S1CON=	NA_NO_NI_AA_CRO;	/* Clear SI		*/
+*** ERROR 202 IN LINE 67 OF SIO1.C: 'S1CON': undefined identifier
+  68   2      		break;
+  69   2      	case(0x48):
+  70   2      		S1CON=	NA_O_NI_AA_CRO;		/* Clear SI, gen STOP	*/
+*** ERROR 202 IN LINE 70 OF SIO1.C: 'S1CON': undefined identifier
+  71   2      		break;
+  72   2      	case(0x50):
+  73   2      		*r_ptr=	S1DAT;			/* Get RX Character	*/
+*** ERROR 202 IN LINE 73 OF SIO1.C: 'S1DAT': undefined identifier
+  74   2      		numbyte_mst--;
+  75   2      		if	( numbyte_mst )
+  76   2      		{
+  77   3      			S1CON=	NA_NO_NI_AA_CRO;/* Clear SI, Set AA	*/
+*** ERROR 202 IN LINE 77 OF SIO1.C: 'S1CON': undefined identifier
+  78   3      			r_ptr++;
+  79   3      		}
+  80   2      		else	S1CON=	NA_NO_NI_NAA_CRO;/* Clear SI, AA	*/
+*** ERROR 202 IN LINE 80 OF SIO1.C: 'S1CON': undefined identifier
+  81   2      		break;
+  82   2      	case(0x58):
+  83   2      		S1CON=	NA_O_NI_AA_CRO;		/* Clear SI, gen STOP	*/
+*** ERROR 202 IN LINE 83 OF SIO1.C: 'S1CON': undefined identifier
+  84   2      		break;
+  85   2      	}
+  86   1      }
+  87          
+  88          	start_sio1		( unsigned char addr, 
+  89          				  unsigned char length,
+  90          				  char *d_ptr)
+  91          {
+  92   1      	td_ptr= rd_ptr= d_ptr;			/* Set up data pointers	*/
+  93   1      	numbyte_mst=	length;			/* Set up length	*/
+  94   1      	sla=	addr;
+  95   1      	STA=	1;				/* Generate START cond	*/
+*** ERROR 202 IN LINE 95 OF SIO1.C: 'STA': undefined identifier
+  96   1      	while	( numbyte_mst );		/* Wait for end of TX/RX*/
+  97   1      }
+  98          
+  99          	init_iic	( )
+ 100          {
+ 101   1      	P1_6=	1;
+ 102   1      	P1_7=	1;
+ 103   1      	IEN0|=	0xA0;				/* Enable IIC Interrupt	*/
+*** ERROR 202 IN LINE 103 OF SIO1.C: 'IEN0': undefined identifier
+ 104   1      	PS1=	1;				/* IIC Int Low Priority	*/
+*** ERROR 202 IN LINE 104 OF SIO1.C: 'PS1': undefined identifier
+C51 COMPILER V3.40,  SIO1                                                                  17/04/97  20:46:22  PAGE 3   
+
+ 105   1      	S1CON=	NA_NO_NI_AA_CRO;		/* Release Bus And Ack	*/
+*** ERROR 202 IN LINE 105 OF SIO1.C: 'S1CON': undefined identifier
+ 106   1      	set[0]=	0x0;				/* Word Address		*/
+ 107   1      	set[1]=	0x0C;				/* Status Control Reg	*/
+ 108   1      	start_sio1	( RTC_W, 2, set );	/* Send Control Reg	*/
+ 109   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  22 ERROR(S)

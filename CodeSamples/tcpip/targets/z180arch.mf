@@ -1,0 +1,139 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# * MAKEFILE.  Edition: 3  Last changed: 2-Nov-93,9:26:54  By: HARRY *
+#  +++=>>> '%l'
+# Currently extracted for edit by: '***_NOBODY_***'
+#
+# Archimedes makefile for Z180 USNET
+ENDIAN=LITTLE   	#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+TRACE=3				#trace level, 0=none, 9=maximum
+
+PTH=m:\public\archimds\z80	#Directory where compiler is kept
+
+#tool names =================================================================
+
+CC = $(PTH)\c-z80
+AS = $(PTH)\az80
+LL = $(PTH)\xlink
+AFLAGS = $(AFLAGS) 
+CFLAGS = -I$(PTH)\ -v1 -q -L -A -s -e -DTRACE=$(TRACE) -D$(ENDIAN)
+LIB = $(PTH)\cl64180
+LFLAGS = -cz80 -l $*.map -x -o $*.dwn
+LIBR = $(PTH)\xlib
+
+#default rules ===========================================================
+.SUFFIXES:
+.SUFFIXES: .s .c .r01
+
+.c.r01:
+	set PATH=$(PTH)\bin
+	$(CC) $(CFLAGS) $<
+.s.r01:
+	set PATH=$(PTH)\bin
+	$(AS) $< $*.lst $(AFLAGS) 
+
+usnet.lib:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.r01: ping.c $(INCS) icmp.h
+fttest.r01: fttest.c $(INCS)
+ltest.r01: ltest.c $(INCS)
+bootp.r01: bootp.c $(INCS)
+tftp.r01: tftp.c $(INCS)
+ftp.r01: ftp.c $(INCS)
+support.r01: support.c $(INCS) driver.h
+nprintf.r01: nprintf.c 
+nscanf.r01: nscanf.c 
+route.r01: route.c $(INCS)
+socket.r01: socket.c socket.h $(INCS)
+ip.r01: ip.c $(INCS)
+icmp.r01: icmp.c $(INCS) icmp.h
+arp.r01: arp.c $(INCS)
+ethernet.r01: ethernet.c $(INCS) ethernet.h
+slip.r01: slip.c $(INCS) 
+wrap.r01: wrap.c $(INCS)
+udp.r01: udp.c $(INCS)
+tcp.r01: tcp.c $(INCS)
+netconf.r01: netconf.c $(INCS) drvconf.h
+net.r01: net.c $(INCS)
+driver.r01: driver.c $(INCS) driver.h
+wd8003.r01: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.r01: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.r01: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.r01: i8250.c $(INCS) driver.h 
+d2681.r01: d2681.c $(INCS) driver.h
+hcsci11.r01: hcsci11.c $(INCS) driver.h
+hcsci16.r01: hcsci16.c $(INCS) driver.h
+h64180.r01: h64180.c $(INCS) driver.h
+suppa.r01: suppa.s
+putchr.r01: putchr.s
+
+#building the libraries =====================================================
+
+usnet.lib:	 netconf.r01 net.r01 route.r01 tcp.r01 udp.r01 ip.r01 icmp.r01 slip.r01 h64180.r01 wrap.r01 support.r01 driver.r01 suppa.r01 nprintf.r01 nscanf.r01 putchr.r01 clock.r01 memory.r01
+	erase usnet.lib
+	echo DEFINE-CPU Z80 >tmp.par
+	echo F-M netconf.r01 usnet.lib >>tmp.par
+	echo F-M net.r01 usnet.lib >>tmp.par
+	echo F-M route.r01 usnet.lib >>tmp.par
+	echo F-M tcp.r01 usnet.lib >>tmp.par
+	echo F-M udp.r01 usnet.lib >>tmp.par
+	echo F-M ip.r01 usnet.lib >>tmp.par
+	echo F-M icmp.r01 usnet.lib >>tmp.par
+	echo F-M slip.r01 usnet.lib >>tmp.par
+	echo F-M h64180.r01 usnet.lib >>tmp.par
+	echo F-M wrap.r01 usnet.lib >>tmp.par
+	echo F-M nprintf.r01 usnet.lib >>tmp.par
+	echo F-M nscanf.r01 usnet.lib >>tmp.par
+	echo F-M support.r01 usnet.lib >>tmp.par
+	echo F-M driver.r01 usnet.lib >>tmp.par
+	echo F-M suppa.r01 usnet.lib >>tmp.par
+	echo F-M putchr.r01 usnet.lib >>tmp.par
+	echo F-M clock.r01 usnet.lib >>tmp.par
+	echo F-M memory.r01 usnet.lib >>tmp.par
+	echo EXIT >>tmp.par
+	$(LIBR) tmp.par
+
+#building the programs =====================================================
+
+emtest:	emtest.r01 usnet.lib
+	set PATH=$(PTH)\bin
+	echo emtest.r01 usnet.lib >tmp.lnk
+	echo $(LIB) >>tmp.lnk
+	echo -Z(CODE)VECTORS,CSTART,CODE,RCODE,ZVECT,CDATA,CONST=2800 >>tmp.lnk
+	echo -ZCSTR,CCSTR,DATA,IDATA,UDATA,ECSTR,WCSTR,TEMP >>tmp.lnk
+	echo -ZTEMP+200,CSTACK >>tmp.lnk
+	echo $(LFLAGS) >>tmp.lnk
+	$(LL) -f tmp.lnk
+
+ltest:	ltest.r01 route.r01 tcp.r01 udp.r01 ip.r01 icmp.r01 slip.r01 wrap.r01 nprintf.r01 nscanf.r01 memory.r01 putchr.r01
+	set PATH=$(PTH)\bin
+	$(CC) $(CFLAGS) -DWRAPTEST net.c
+	$(CC) $(CFLAGS) -DWRAPTEST support.c
+	echo ltest.r01 net.r01 route.r01 tcp.r01 udp.r01 >tmp.lnk
+	echo ip.r01 icmp.r01 slip.r01 wrap.r01 support.r01 >>tmp.lnk
+	echo nprintf.r01 nscanf.r01 memory.r01 putchr.r01 >>tmp.lnk
+	echo $(LIB) >>tmp.lnk
+	echo -Z(CODE)CSTART,CODE,RCODE,ZVECT,CDATA,CONST,CSTR=2800 >>tmp.lnk
+	echo -ZCCSTR,DATA,IDATA,UDATA,ECSTR,WCSTR,TEMP >>tmp.lnk
+	echo -ZTEMP+200,CSTACK >>tmp.lnk
+	echo $(LFLAGS) >>tmp.lnk
+	$(LL) -f tmp.lnk
+	erase net.r01
+	erase support.r01
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.r01
+	erase *.s01
+	erase *.map
+	erase *.tmp
+	erase tmp.*
+	erase usnet.lib
+

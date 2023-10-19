@@ -1,0 +1,120 @@
+/*			Copyright Q Solutions				*/
+/*	File:		testser.c					*/
+/*	Programmer:	MoT						*/
+/*	Module:		Library routine test program (serial.c)		*/
+/*									*/
+/*			History						*/
+/* 05:19am 06-07-1997  	Written from scratch				*/
+/* 23:58 29/03/1998 	Cleaned up for release				*/
+/* 00:27 07/04/1998 	Recieve Frame Testing Added.			*/
+/*									*/
+
+#pragma		ROM (COMPACT)
+#pragma		LARGE
+
+/* Standard Library Header Files					*/
+#include	<stdio.h>
+#include	<reg552.h>
+
+/* uNode Developer Kit Library Header Files				*/
+typedef	unsigned int uint;		/* Optimise for size & speed:	*/
+#include	<nodelcd.h>		/* Local LCD module routines	*/
+#include	<nkey.h>		/* Local Keypad module routines	*/
+#include	<wdog.h>		/* Watchdog refresh routine	*/
+#include	<serial.h>		/* Serial port routines		*/
+
+const char *signon1= " \xe4Node Dev. Kit ";/* Line 1 of sign on screen	*/
+const char *signon2= "Q Solutions 1998";/* Line 2 of signon screen	*/
+const char *sertest=	"\nSerial Port Library Test.\n";
+const char *devkit=	"\nuNode Developer's Kit.\n";
+const char *copyr=	"\nCopyright Q Solutions 1998.\n";
+const char *quality=	"\nQuality Controller Solutions.\n";
+
+#define		PAUSE	256		/* Pause Period			*/
+#define		IO_NLCD	1		/* Output to uNode LCD		*/
+#define		IO_SER	2		/* Output to Serial Port	*/
+char	out_stream;			/* Output port			*/
+byte	nextstr= 0;			/* Message index		*/
+byte	ser_cnt= 0;			/* Serial Frame Counter		*/
+uint	wait= PAUSE;			/* Pause counter		*/
+
+void	signon		( )		/* Splash Screen		*/
+{
+	out_stream= IO_NLCD;		/* Output port: LCD		*/
+	paint_nlcd ( signon1, signon2 );
+	out_stream= IO_SER;		/* Output port: Serial		*/
+	printf	( "\nSerial Port Tester...\n" );
+}
+
+void	initialise	( )		/* Initialise Hardware		*/
+{
+	EA=		1;		/* Enable Global Interrupt	*/
+	init_nlcd	( );		/* Initialise local LCD		*/
+	init_serial	( B19200 );	/* Initialise Serial Port	*/
+	signon		( );		/* Splash screen		*/
+}
+
+char	putchar		( char out )
+{
+char	result;
+	switch	( out_stream )
+	{
+	case IO_NLCD:			/* Write to local LCD		*/
+		result= nputchar ( out );
+		break;
+	case IO_SER:			/* Write to serial Port		*/
+		result= sputchar ( out );
+		break;
+	default:
+		return	( -1 );
+	}
+	return	( result );
+}
+
+void	printout	( void )	/* Print Message to serial port	*/
+{
+	out_stream= IO_SER;		/* Output port: Serial		*/
+	switch	( nextstr )
+	{
+	case 0:	printf	( sertest );
+		break;
+	case 1:	printf	( devkit );
+		break;
+	case 2:	printf	( copyr );
+		break;
+	case 3:	printf	( quality );
+		break;
+	default:
+		nextstr= 0;
+		break;
+	}
+	if	( ++nextstr > 3 ) nextstr= 0;
+}
+
+bit	printin	( void )		/* Print serial input to LCD	*/
+{
+	if	( !s_rnew ) return 0;	/* Frame recieved		*/
+	out_stream= IO_NLCD;		/* Output port: LCD		*/
+	s_rnew=	0;			/* Reset serial RX flag		*/
+	ser_cnt++;			/* Notch one up			*/
+	set_nlcd( NLCD_L2 );		/* Set up LCD			*/
+	printf	( "Frame %03bu Byte %c",/* Print Serial Frame Info	*/
+		ser_cnt, s_rbuf[0] );	/* Frame count, Input Character	*/
+	return	1;
+}
+
+void	main	( void )		/* Main Loop			*/
+{
+	initialise	( );		/* Set up drivers, sign on	*/
+	while	( 1 )
+	{
+		while	( wait-- )	/* Generate rx handler timing.	*/
+			wdog	( 10 );	/* (ie slow things down a bit)	*/
+		wait=	PAUSE;		/* s_rxh is called 10 times from*/
+		/* the last byte recieved in order to generate a frame	*/
+		/* timout. 						*/
+		s_rxh	( );		/* Service serial port handler	*/
+		if	( printin( ))	/* Print serial input to LCD	*/
+			printout( );	/* Print serial output message	*/
+	}
+}

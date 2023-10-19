@@ -1,0 +1,129 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# * MAKEFILE.  Edition: 3  Last changed: 2-Nov-93,9:26:54  By: HARRY *
+#  +++=>>> '%l'
+# Currently extracted for edit by: '***_NOBODY_***'
+#
+# Franklin makefile for Siemens 16x USNET
+ENDIAN=LITTLE	   		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+NTRACE=3			#trace level, 0=none, 9=maximum
+
+PTH = m:\public\franklin\pk166	#Directory where compiler is kept
+
+#tool names =================================================================
+
+CC = $(PTH)\bin\c166
+AS = $(PTH)\bin\a166
+LNK = $(PTH)\bin\l166
+INI = 
+LIB = $(PTH)\cl8051l.obj
+CFLAGS = TINY DF($(ENDIAN)) DF(NTRACE=$(NTRACE))
+AFLAGS = 
+LFLAGS = -c8051 -o $*.dwn -l $*.map -D_R=0 -x
+LIBR = $(PTH)\bin\lib166
+
+#default rules ===========================================================
+.SUFFIXES: .obj .c .a66
+
+.a66.obj:				# assembly to object
+	$(AS) $< $(AFLAGS)
+.c.obj:					# C to object
+	set C166INC=$(PTH)\inc 
+	set PATH=$(PTH)\bin
+	$(CC) $< $(CFLAGS)
+.c.src:					# C to list
+	set C166INC=$(PTH)\inc 
+	set PATH=$(PTH)\bin
+	$(CC) $< $(CFLAGS) SRC
+
+usnet.lib:				#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.obj: ping.c $(INCS) icmp.h
+fttest.obj: fttest.c $(INCS)
+ltest.obj: ltest.c $(INCS)
+bootp.obj: bootp.c $(INCS)
+tftp.obj: tftp.c $(INCS)
+ftp.obj: ftp.c $(INCS)
+support.obj: support.c $(INCS) driver.h
+nprintf.obj: nprintf.c 
+nscanf.obj: nscanf.c 
+route.obj: route.c $(INCS)
+socket.obj: socket.c socket.h $(INCS)
+ip.obj: ip.c $(INCS)
+icmp.obj: icmp.c $(INCS) icmp.h
+arp.obj: arp.c $(INCS)
+ethernet.obj: ethernet.c $(INCS) ethernet.h
+slip.obj: slip.c $(INCS) 
+ppp.obj: ppp.c $(INCS) 
+wrap.obj: wrap.c $(INCS)
+udp.obj: udp.c $(INCS)
+tcp.obj: tcp.c $(INCS)
+netconf.obj: netconf.c $(INCS) drvconf.h
+net.obj: net.c $(INCS)
+driver.obj: driver.c $(INCS) driver.h
+wd8003.obj: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.obj: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.obj: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.obj: i8250.c $(INCS) driver.h 
+d2681.obj: d2681.c $(INCS) driver.h
+hcsci11.obj: hcsci11.c $(INCS) driver.h
+hcsci16.obj: hcsci16.c $(INCS) driver.h
+h64180.obj: h64180.c $(INCS) driver.h
+putchr.obj: putchr.c
+clock.obj: clock.c
+start.obj: start.a66
+
+#building the libraries =====================================================
+
+usnet.lib:	 netconf.obj net.obj route.obj tcp.obj udp.obj ip.obj icmp.obj slip.obj ppp.obj hc11sci.obj wrap.obj support.obj driver.obj nprintf.obj nscanf.obj putchr.obj clock.obj
+	erase usnet.lib
+	$(LIBR) CREATE usnet.lib 
+	$(LIBR) ADD netconf.obj, net.obj, route.obj, tcp.obj TO usnet.lib 
+	$(LIBR) ADD udp.obj, ip.obj, icmp.obj, slip.obj TO usnet.lib 
+	$(LIBR) ADD ppp.obj, hc11sci.obj, wrap.obj TO usnet.lib 
+	$(LIBR) ADD nprintf.obj, nscanf.obj, support.obj TO usnet.lib 
+	$(LIBR) ADD driver.obj, putchr.obj, clock.obj TO usnet.lib
+
+#building the programs =====================================================
+# Load and test with "ice ltest.dwn", use "nmake init" to set path.
+
+emtest:	emtest.obj usnet.lib
+	set PATH=$(PTH)\bin
+	echo emtest.obj, usnet.lib TO $* >tmp.lnk
+	echo CLASSES(NDATA0(0x8800-0xbfff), NCONST(0x8000-0x8fff),NCODE(0x2000-0x7fff)) >>tmp.lnk
+	echo NOVECTAB >>tmp.lnk
+	set C166LIB=$(PTH)\lib 
+	$(LNK) @tmp.lnk
+	oh166 $*
+
+ltest:	start.obj ltest.obj route.obj tcp.obj udp.obj ip.obj icmp.obj slip.obj wrap.obj nprintf.obj nscanf.obj putchr.obj 
+	set C166INC=$(PTH)\inc 
+	set PATH=$(PTH)\bin
+	$(CC) net.c $(CFLAGS) DF(WRAPTEST)
+	$(CC) support.c $(CFLAGS) DF(WRAPTEST)
+	echo start.obj,ltest.obj,net.obj,route.obj,tcp.obj,udp.obj, >tmp.lnk
+	echo ip.obj, icmp.obj, slip.obj, wrap.obj, >>tmp.lnk
+	echo nprintf.obj, nscanf.obj, support.obj, putchr.obj >>tmp.lnk
+	echo TO $* CLASSES(NDATA0(0x8800-0xbfff), NCONST(0x8000-0x8fff),NCODE(0x2000-0x7fff)) >>tmp.lnk
+	set C166LIB=$(PTH)\lib 
+	$(LNK) @tmp.lnk
+	oh166 $*
+	erase net.obj
+	erase support.obj
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.obj
+	erase *.map
+	erase *.tmp
+	erase *.lst
+	erase tmp.*
+	erase usnet.lib
+

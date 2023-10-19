@@ -1,0 +1,142 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# * MAKEFILE.  Edition: 3  Last changed: 2-Nov-93,9:26:54  By: HARRY *
+#  +++=>>> '%l'
+# Currently extracted for edit by: '***_NOBODY_***'
+#
+# Archimedes makefile for Motorola HC11 USNET
+ENDIAN=BIG	   		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+TRACE=3				#trace level, 0=none, 9=maximum
+
+PTH=o:\public\archimds		#directory where compiler is kept
+
+#tool names =================================================================
+
+CC = c-6811
+AS = $(PTH)\bin\a6801
+LNK = $(PTH)\bin\xlink
+CFLAGS = -ml -s -e -I$(PTH)\INCLUDE\ -D$(ENDIAN) -DTRACE=$(TRACE)
+AFLAGS = 
+LIBR = $(PTH)\bin\xlib
+
+#default rules ===========================================================
+.SUFFIXES: .r07 .s07 .c 
+
+.s07.r07:				# assembly to object
+	$(AS) $<
+.c.r07:					# C to object
+	set PATH=$(PTH)\bin
+	set C_INCLUDE=o:\public\archimds\include
+	$(CC) $< $(CFLAGS)
+.c.lst:					# C to assembler
+	set PATH=$(PTH)\bin
+	set C_INCLUDE=o:\public\archimds\include
+	$(CC) $< $(CFLAGS) -a $*.lst
+
+usnet.lib:				#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.r07: ping.c $(INCS) icmp.h
+fttest.r07: fttest.c $(INCS)
+ltest.r07: ltest.c $(INCS)
+bootp.r07: bootp.c $(INCS)
+tftp.r07: tftp.c $(INCS)
+ftp.r07: ftp.c $(INCS)
+support.r07: support.c $(INCS) driver.h
+route.r07: route.c $(INCS)
+socket.r07: socket.c socket.h $(INCS)
+ip.r07: ip.c $(INCS)
+icmp.r07: icmp.c $(INCS) icmp.h
+arp.r07: arp.c $(INCS)
+ethernet.r07: ethernet.c $(INCS) ethernet.h
+slip.r07: slip.c $(INCS) 
+wrap.r07: wrap.c $(INCS)
+udp.r07: udp.c $(INCS)
+tcp.r07: tcp.c $(INCS)
+netconf.r07: netconf.c $(INCS) drvconf.h
+net.r07: net.c $(INCS)
+driver.r07: driver.c $(INCS) driver.h
+wd8003.r07: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.r07: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.r07: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.r07: i8250.c $(INCS) driver.h 
+d2681.r07: d2681.c $(INCS) driver.h
+hcsci11.r07: hcsci11.c $(INCS) driver.h
+hcsci16.r07: hcsci16.c $(INCS) driver.h
+h64180.r07: h64180.c $(INCS) driver.h
+suppa.r07: suppa.s07
+putchr.r07: putchr.s07
+clock.r07: clock.s07
+
+#building the libraries =====================================================
+
+usnet.lib:	 netconf.r07 net.r07 route.r07 tcp.r07 udp.r07 ip.r07 icmp.r07 slip.r07 hc11sci.r07 wrap.r07 support.r07 driver.r07 suppa.r07 nprintf.r07 nscanf.r07 putchr.r07 clock.r07
+	erase usnet.lib
+	echo DEFINE-CPU 68HC11 >tmp.par
+	echo F-M netconf.r07 usnet.lib >>tmp.par
+	echo F-M net.r07 usnet.lib >>tmp.par
+	echo F-M route.r07 usnet.lib >>tmp.par
+	echo F-M tcp.r07 usnet.lib >>tmp.par
+	echo F-M udp.r07 usnet.lib >>tmp.par
+	echo F-M ip.r07 usnet.lib >>tmp.par
+	echo F-M icmp.r07 usnet.lib >>tmp.par
+	echo F-M slip.r07 usnet.lib >>tmp.par
+	echo F-M hc11sci.r07 usnet.lib >>tmp.par
+	echo F-M wrap.r07 usnet.lib >>tmp.par
+	echo F-M nprintf.r07 usnet.lib >>tmp.par
+	echo F-M nscanf.r07 usnet.lib >>tmp.par
+	echo F-M support.r07 usnet.lib >>tmp.par
+	echo F-M driver.r07 usnet.lib >>tmp.par
+	echo F-M suppa.r07 usnet.lib >>tmp.par
+	echo F-M putchr.r07 usnet.lib >>tmp.par
+	echo F-M clock.r07 usnet.lib >>tmp.par
+	echo EXIT >>tmp.par
+	$(LIBR) tmp.par
+
+#building the programs =====================================================
+# our test board has RAM 6000-DFEF
+
+emtest:	emtest.r07 usnet.lib
+	set PATH=$(PTH)\bin
+	echo -c68hc11 >tmp.lnk
+	echo -Z(CODE)RCODE,CODE,CONST,CSTR,CCSTR,ZVECT,FLIST=6000 >>tmp.lnk
+	echo -Z(DATA)UDATA,IDATA,ECSTR,TEMP,WCSTR,CDATA >>tmp.lnk
+	echo -Z(DATA)DATA,INTVEC,CSTACK+400 >>tmp.lnk
+	echo -Z(DATA)REALVEC=00EB >>tmp.lnk
+	echo emtest.r07 usnet.lib >>tmp.lnk
+	echo $(PTH)\lib\cl6811 >>tmp.lnk
+	echo -o $*.dwn -xems -l $*.map >>tmp.lnk
+	$(LNK) -f tmp.lnk
+
+ltest:	ltest.r07 route.r07 tcp.r07 udp.r07 ip.r07 icmp.r07 slip.r07 wrap.r07 nprintf.r07 nscanf.r07 putchr.r07
+	set PATH=$(PTH)\bin
+	$(CC) net.c $(CFLAGS) -DWRAPTEST
+	$(CC) support.c $(CFLAGS) -DWRAPTEST
+	echo -c68hc11 >tmp.lnk
+	echo -Z(CODE)RCODE,CODE,CONST,CSTR,CCSTR,ZVECT,FLIST=6000 >>tmp.lnk
+	echo -Z(DATA)UDATA,IDATA,ECSTR,TEMP,WCSTR,CDATA >>tmp.lnk
+	echo -Z(DATA)DATA,INTVEC,CSTACK+400 >>tmp.lnk
+	echo ltest.r07 net.r07 route.r07 tcp.r07 udp.r07 ip.r07 >>tmp.lnk
+	echo icmp.r07 slip.r07 wrap.r07 >>tmp.lnk
+	echo nprintf.r07 nscanf.r07 support.r07 putchr.r07 >>tmp.lnk
+	echo $(PTH)\lib\cl6811 >>tmp.lnk
+	echo -o $*.dwn -xems -l $*.map >>tmp.lnk
+	$(LNK) -f tmp.lnk
+	erase net.r07
+	erase support.r07
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.r07
+	erase *.map
+	erase *.tmp
+	erase *.dwn
+	erase tmp.*
+	erase usnet.lib
+

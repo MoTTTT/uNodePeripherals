@@ -1,0 +1,44 @@
+C51 COMPILER V3.40,  WDOG                                                                  29/04/98  18:57:42  PAGE 1   
+
+
+DOS C51 COMPILER V3.40, COMPILATION OF MODULE WDOG
+OBJECT MODULE PLACED IN WDOG.OBJ
+COMPILER INVOKED BY: C:\C51\BIN\C51.EXE WDOG.C LA
+
+stmt level    source
+
+   1          /*			Copyright Q Solutions				*/
+   2          /*	File:		WDog.c						*/
+   3          /*	Programmer:	MoT						*/
+   4          /*	Module:		Watchdog refresh routine			*/
+   5          /*									*/
+   6          /*			History						*/
+   7          /* 00:40 17/04/1997 	Written from scratch				*/
+   8          
+   9          /* Library files							*/
+  10          #include	<reg552.h>
+  11          
+  12          /* Local defines							*/
+  13          #define		WD_MASK	0x10		/* Watchdog refresh mask	*/
+  14          
+  15          void	wdog	( char period );	/* Refresh Watchdog timer	*/
+  16          
+  17          void	wdog	( char period )		/* Refresh Watchdog timer	*/
+  18          {
+  19   1      	PCON|=	WD_MASK;		/* Enable Refresh		*/
+  20   1      	T3=	period;			/* Refresh Watchdog Timer	*/
+  21   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =      6    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

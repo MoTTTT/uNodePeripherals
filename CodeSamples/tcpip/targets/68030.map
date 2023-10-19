@@ -1,0 +1,100 @@
+Microtec Research LNK68K  Version 6.9C   Tue Dec 14 15:14:33 1993    Page   1
+
+Command line: o:\public\mri\asm68k\lnk68k.exe  -c tmp.lnk -m 
+
+name emtest 
+listmap publics 
+format S 
+base 0x10000 
+order code,literals,strings,const 
+order ??INITDATA 
+order vars,zerovars,tags,ioports 
+load start.obj 
+load emtest.obj netconf.obj net.obj route.obj tcp.obj 
+load udp.obj ip.obj icmp.obj arp.obj ethernet.obj 
+load nprintf.obj nscanf.obj 
+load en360.obj driver.obj support.obj putchr.obj 
+load clock.obj suppa.obj 
+load o:\public\mri\mcc68k\68020\mcc68kab.lib 
+end 
+Microtec Research LNK68K  Version 6.9C   Tue Dec 14 15:14:35 1993
+    Page   2
+
+
+
+OUTPUT MODULE NAME:    emtest
+OUTPUT MODULE FORMAT:  MOTOROLA S3
+
+
+SECTION SUMMARY
+---------------
+
+SECTION    ATTRIBUTE                     START      END        LENGTH     ALIGN
+
+code       NORMAL CODE                   00010000   00014A47   00004A48   2 (WORD)  
+literals                                 00014A48   00014A48   00000000   0 (BYTE)  
+strings    NORMAL ROM                    00014A48   00014D23   000002DC   2 (WORD)  
+const      NORMAL ROM                    00014D24   00014F47   00000224   2 (WORD)  
+??INITDATA
+                                         00014F48   00014F48   00000000   0 (BYTE)  
+vars       NORMAL DATA                   00014F48   00014F87   00000040   2 (WORD)  
+zerovars   NORMAL DATA                   00014F88   000190F3   0000416C   4 (LONG)  
+tags                                     000190F4   000190F4   00000000   0 (BYTE)  
+ioports                                  000190F4   000190F4   00000000   0 (BYTE)  
+.data      NORMAL DATA                   000190F4   0001A093   00000FA0   2 (WORD)  
+
+
+MODULE SUMMARY
+--------------
+
+MODULE         SECTION:START        SECTION:END       FILE
+
+start            .data:000190F4       .data:0001A093  C:\USNET\start.obj   
+                  code:00010000        code:0001000D      
+emtest         strings:00014A48     strings:00014B61  C:\USNET\emtest.obj   
+                  code:0001000E        code:00010711      
+netconf          const:00014D24       const:00014DDD  C:\USNET\netconf.obj   
+               strings:00014B62     strings:00014C69      
+net              const:00014DDE       const:00014E09  C:\USNET\net.obj   
+                  vars:00014F48        vars:00014F73      
+               strings:00014C6A     strings:00014CA3      
+                  code:00010712        code:0001145D      
+route             code:0001145E        code:0001171B  C:\USNET\route.obj   
+tcp            strings:00014CA4     strings:00014CB5  C:\USNET\tcp.obj   
+                  code:0001171C        code:000122B7      
+                 const:00014E0A       const:00014E35      
+udp               code:000122B8        code:0001270F  C:\USNET\udp.obj   
+                 const:00014E36       const:00014E61      
+ip               const:00014E62       const:00014E91  C:\USNET\ip.obj   
+                  code:00012710        code:00012AE9      
+                  vars:00014F74        vars:00014F77      
+icmp              code:00012AEA        code:00012DBD  C:\USNET\icmp.obj   
+                 const:00014E92       const:00014EBD      
+arp               code:00012DBE        code:0001321F  C:\USNET\arp.obj   
+                 const:00014EBE       const:00014EE9      
+ethernet         const:00014EEA       const:00014F1B  C:\USNET\ethernet.obj   
+                  code:00013220        code:00013723      
+nprintf           code:00013724        code:00013A6F  C:\USNET\nprintf.obj   
+Microtec Research LNK68K  Version 6.9C   Tue Dec 14 15:14:35 1993
+    Page   3
+
+nscanf            code:00013A70        code:00013E45  C:\USNET\nscanf.obj   
+en360             code:00013E46        code:0001435F  C:\USNET\en360.obj   
+               strings:00014CB6     strings:00014CE5      
+                 const:00014F1C       const:00014F47      
+driver        zerovars:00014F88    zerovars:00014F97  C:\USNET\driver.obj   
+                  code:00014360        code:000143F7      
+                  vars:00014F78        vars:00014F87      
+support       zerovars:00014F98    zerovars:00018A51  C:\USNET\support.obj   
+                  code:000143F8        code:0001479F      
+               strings:00014CE6     strings:00014D23      
+putchr            code:000147A0        code:000147D5  C:\USNET\putchr.obj   
+clock         zerovars:00018A52    zerovars:00018A55  C:\USNET\clock.obj   
+                  code:000147D6        code:00014845      
+suppa             code:00014846        code:0001488B  C:\USNET\suppa.obj   
+atoi              code:0001488C        code:000148EF  o:\public\mri\mcc68k\68020\mcc68kab.lib  L
+memcmp            code:000148F0        code:00014979  o:\public\mri\mcc68k\68020\mcc68kab.lib  L
+memset            code:0001497A        code:000149DD  o:\public\mri\mcc68k\68020\mcc68kab.lib  L
+strcmp            code:000149DE        code:00014A47  o:\public\mri\mcc68k\68020\mcc68kab.lib  L
+LINKER GEN    zerovars:00018A58    zerovars:000190F3  LINKER GENERATED   
+

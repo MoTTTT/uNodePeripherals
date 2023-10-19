@@ -1,0 +1,67 @@
+C51 COMPILER V3.40,  ADC                                                                   29/04/98  18:57:38  PAGE 1   
+
+
+DOS C51 COMPILER V3.40, COMPILATION OF MODULE ADC
+OBJECT MODULE PLACED IN ADC.OBJ
+COMPILER INVOKED BY: C:\C51\BIN\C51.EXE ADC.C LA
+
+stmt level    source
+
+   1          /*			Copyright Q Solutions				*/
+   2          /*	File:		adc.c						*/
+   3          /*	Programmer:	MoT						*/
+   4          /*	Module:		Analog to digital converter routines		*/
+   5          /*									*/
+   6          /*			History						*/
+   7          /* 17:16 27/04/1997   	Written from scratch				*/
+   8          /*									*/
+   9          
+  10          /*			Standard Library Header Files			*/
+  11          #include	<reg552.h>
+  12          /*			ADC Parameters					*/
+  13          #define	ADC_INI		0x00		/* ADC Init Control Byte	*/
+  14          #define	ADC_INT		0xEF		/* ADC Interrupt Mask		*/
+  15          #define	ADC_STA		0x08		/* ADC Start Mask		*/
+  16          #define	ADC_CHAN	8		/* Number of channels to read	*/
+  17          /*			ADC Variables					*/
+  18          typedef	unsigned int uint;		/* Optimise for size & speed:	*/
+  19          typedef	unsigned char byte;		/* Use unsigned char and int	*/
+  20          byte	adc_chan;			/* Current ADC channel		*/
+  21          byte	adc[ADC_CHAN];			/* ADC results			*/
+  22          bit	adc_read=	0;		/* ADC busy flag		*/
+  23          
+  24          void	init_adc	( )		/* Init Analog->Digital Convert	*/
+  25          {
+  26   1      	ADCON=	ADC_INI;		/* Set up ADC Control Register	*/
+  27   1      	EAD=	1;			/* Enable ADC Interrupt		*/
+  28   1      }
+  29          
+  30          void	adc_start	( )		/* Start Reading ADC channels	*/
+  31          {
+  32   1      	adc_read=	1;		/* Set "Reading" Flag		*/
+  33   1      	adc_chan=	0;		/* Start with channel 1		*/
+  34   1      	ADCON=	ADC_STA;		/* Start first channel read	*/
+  35   1      }
+  36          
+  37          void	adc_int	( void ) interrupt 10	/* Analog to Digital interrupt	*/
+  38          {
+  39   1      	adc[adc_chan]=ADCH;		/* Copy result to adc buffer	*/
+  40   1      	ADCON&=	ADC_INT;		/* Reset interrupt 		*/
+  41   1      	if	(++adc_chan== ADC_CHAN )/* Read next channel, Done? 	*/
+  42   1      		adc_read=	0;	/* Reset "Reading" flag		*/
+  43   1      	else	ADCON=ADC_STA+ adc_chan;/* Start next channel read	*/
+  44   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     77    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =      9    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

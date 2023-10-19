@@ -1,0 +1,156 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# Intermetrics (Whitesmith) makefile for HC16 USNET
+ENDIAN=BIG	#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+MODEL=s		#memory model, c=compact, s=small
+
+TRACE=3		#trace level, 0=none, 9=maximum
+
+PTH=J:   	#path to compiler, define with "nmake map"
+
+#derived variables ========================================================
+
+!if "$(MODEL)" == "c"
+DATABIAS = -0x30000
+DATAORG = 0x3c000
+F = n
+!endif
+!if "$(MODEL)" == "s"
+DATABIAS = 0
+DATAORG = 0x30000
+F = f
+!endif
+
+#path and tool names ======================================================
+
+LPTH = $(PTH)lib
+CC = $(PTH)c
+CFLAGS = +o -dmod$(MODEL) -d$(ENDIAN)
+AS = $(PTH)x6816
+AFLAGS = -l -dDSACK=0
+LN = $(PTH)lnkh16
+LIBR = $(PTH)lby
+
+#default rules ===========================================================
+.SUFFIXES : .c .s .o .h16 .prm .dwn
+.c.o:
+	set PATH=$(PTH)
+	$(CC) $(CFLAGS) $<
+.s.o:
+	$(AS) $(AFLAGS) -o $*.o $<
+.prm.dwn:		#linked object -> Motorola S record download file
+	$(PTH)hexh16 -m$* -o $*.dwn -s2 -db$(DATABIAS) $*.prm
+.h16.prm:		#collect initialized data into proper location
+	$(PTH)toprom -o $*.prm $*.h16
+.c.ls:
+	set PATH=$(PTH)
+	$(CC) $(CFLAGS) -dlistcs $<
+
+usnet.a:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.o: ping.c $(INCS) icmp.h
+fttest.o: fttest.c $(INCS)
+ltest.o: ltest.c $(INCS)
+bootp.o: bootp.c $(INCS)
+tftp.o: tftp.c $(INCS)
+ftp.o: ftp.c $(INCS)
+support.o: support.c $(INCS) driver.h
+nprintf.o: nprintf.c 
+nscanf.o: nscanf.c 
+route.o: route.c $(INCS)
+socket.o: socket.c socket.h $(INCS)
+ip.o: ip.c $(INCS)
+icmp.o: icmp.c $(INCS) icmp.h
+arp.o: arp.c $(INCS)
+rarp.o: rarp.c $(INCS)
+ethernet.o: ethernet.c $(INCS) ethernet.h
+slip.o: slip.c $(INCS) 
+wrap.o: wrap.c $(INCS)
+udp.o: udp.c $(INCS)
+tcp.o: tcp.c $(INCS)
+netconf.o: netconf.c $(INCS) drvconf.h
+net.o: net.c $(INCS)
+driver.o: driver.c $(INCS) driver.h
+wd8003.o: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.o: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.o: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.o: i8250.c $(INCS) driver.h 
+d2681.o: d2681.c $(INCS) driver.h
+hcsci11.o: hcsci11.c $(INCS) driver.h
+hcsci16.o: hcsci16.c $(INCS) driver.h
+h64180.o: h64180.c $(INCS) driver.h
+suppa.o: suppa.asm
+
+#building of object library ----------------------------------------------------
+
+fixcrcr.exe:	fixcrcr.c
+		bcc fixcrcr.c
+
+#building the libraries =====================================================
+
+usnet.a: 	netconf.o net.o route.o tcp.o udp.o ip.o icmp.o arp.o rarp.o ethernet.o slip.o wrap.o support.o driver.o nprintf.o nscanf.o hc16sci.o suppa.o
+	-erase usnet.a
+	$(LIBR) -r usnet.a netconf.o net.o route.o tcp.o udp.o ip.o
+	$(LIBR) -r usnet.a icmp.o arp.o rarp.o ethernet.o slip.o wrap.o
+	$(LIBR) -r usnet.a support.o nprintf.o nscanf.o
+	$(LIBR) -r usnet.a hc16sci.o suppa.o driver.o
+
+#building the programs =====================================================
+
+emtest:		emtest.dwn
+emtest.dwn:	emtest.prm
+emtest.prm:	emtest.h16
+emtest.h16:	start_$(MODEL).o emtest.o usnet.a
+	$(LN) < <<
++h -o $*.h16 -ps16 -pc. -max 0xfffff
++map=$*.map
++text -b0x000 -f1 +data -b$(DATAORG) -f1 +bss -r1
+$** 
+$(LPTH)\libm.h16 $(LPTH)\libis.h16 +def __memory=__bss__ 
++def __pdata=__text__
+<<
+
+ltest:		ltest.dwn
+ltest.dwn:	ltest.prm
+ltest.prm:	ltest.h16
+ltest.h16:	start_$(MODEL).o ltest.o usnet.a
+	set PATH=$(PTH)
+	$(CC) $(CFLAGS) -dWRAPTEST net.c
+	$(CC) $(CFLAGS) -dWRAPTEST support.c
+	$(LN) < <<
++h -o $*.h16 -ps16 -pc. -max 0xfffff
++map=$*.map
++text -b0x000 -f1 +data -b$(DATAORG) -f1 +bss -r1
+start_$(MODEL).o ltest.o net.o support.o usnet.a
+$(LPTH)\libm.h16 $(LPTH)\libis.h16 +def __memory=__bss__ 
++def __pdata=__text__
+<<
+	erase net.o
+	erase support.o
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.ls
+	erase *.dwn
+	erase *.out
+	erase *.o
+	erase *.0
+	erase *.h16
+	erase *.map
+	erase *.err
+	erase usnet.a
+
+map:
+	map J:=condor/viper:public/wsmith/68hc16
+

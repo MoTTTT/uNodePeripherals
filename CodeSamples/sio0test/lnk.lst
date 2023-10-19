@@ -1,0 +1,112 @@
+MCS-51 LINKER / LOCATER  L51 V2.7                                                             DATE  04/29/93   PAGE    1
+
+
+MS-DOS MCS-51 LINKER / LOCATER  L51 V2.7, INVOKED BY:
+L51 SIO0TEST.OBJ TO SIO0TEST.ABS RAMSIZE (256) NOOVERLAY PRINT (LNK.LST) XDATA (4200H)
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  SIO0TEST.OBJ (SIO0TEST)
+  C:\FC\LIB\C51S.LIB (?C_STARTUP)
+  C:\FC\LIB\C51S.LIB (PRINTF)
+  C:\FC\LIB\C51S.LIB (PUTCHAR)
+  C:\FC\LIB\C51S.LIB (?C_INIT)
+  C:\FC\LIB\C51S.LIB (?C_CLDPTR)
+  C:\FC\LIB\C51S.LIB (?C_CLDOPTR)
+  C:\FC\LIB\C51S.LIB (?C_CSTPTR)
+  C:\FC\LIB\C51S.LIB (?C_PLDIIDATA)
+  C:\FC\LIB\C51S.LIB (?C_CCASE)
+
+
+LINK MAP OF MODULE:  SIO0TEST.ABS (SIO0TEST)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            DATA    0008H     0001H     UNIT         ?DT?WRITE_BYTES?SIO0TEST
+            DATA    0009H     0007H     UNIT         ?DT?SIO0TEST
+            IDATA   0010H     0005H     UNIT         ?ID?SIO0TEST
+                    0015H     0003H                  *** GAP ***
+            REG     0018H     0008H     ABSOLUTE     "REG BANK 3"
+            BIT     0020H.0   0000H.1   UNIT         ?BI?SIO0TEST
+            BIT     0020H.1   0001H.1   UNIT         ?BI?PRINTF?PRINTF
+                    0021H.2   0000H.6                *** GAP ***
+            DATA    0022H     0014H     UNIT         ?DT?PRINTF?PRINTF
+            IDATA   0036H     0001H     UNIT         ?STACK
+
+            * * * * * * *  X D A T A   M E M O R Y  * * * * * * *
+                    0000H     4200H                  *** GAP ***
+            XDATA   4200H     4000H     UNIT         ?XD?SIO0TEST
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     0003H     UNIT         ?PR?X1_INT?SIO0TEST
+                    0006H     0005H                  *** GAP ***
+            CODE    000BH     0003H     ABSOLUTE     
+                    000EH     0005H                  *** GAP ***
+            CODE    0013H     0003H     ABSOLUTE     
+            CODE    0016H     000AH     UNIT         ?PR?_SET_LCD?SIO0TEST
+                    0020H     0003H                  *** GAP ***
+            CODE    0023H     0003H     ABSOLUTE     
+            CODE    0026H     001BH     UNIT         ?PR?INIT_LCD?SIO0TEST
+            CODE    0041H     000CH     UNIT         ?PR?INIT_SIO0?SIO0TEST
+            CODE    004DH     000DH     UNIT         ?PR?GETKEY?SIO0TEST
+            CODE    005AH     0014H     UNIT         ?PR?INIT?SIO0TEST
+            CODE    006EH     001CH     UNIT         ?PR?TIMEOUT?SIO0TEST
+            CODE    008AH     001BH     UNIT         ?PR?_F_ERROR?SIO0TEST
+            CODE    00A5H     0046H     UNIT         ?PR?PROC_FRAME?SIO0TEST
+            CODE    00EBH     005FH     UNIT         ?PR?WRITE_BYTES?SIO0TEST
+            CODE    014AH     0036H     UNIT         ?PR?RX_CODE?SIO0TEST
+            CODE    0180H     001FH     UNIT         ?PR?MAIN?SIO0TEST
+MCS-51 LINKER / LOCATER  L51 V2.7                                                           DATE  04/29/93   PAGE    2
+
+
+            CODE    019FH     004AH     UNIT         ?CO?SIO0TEST
+            CODE    01E9H     0015H     UNIT         ?C_INITSEG
+            CODE    01FEH     008CH     UNIT         ?C_C51STARTUP
+            CODE    028AH     032BH     UNIT         ?PR?PRINTF?PRINTF
+            CODE    05B5H     005BH     UNIT         PUT_C
+            CODE    0610H     0094H     UNIT         ?C_LIB_CODE
+
+
+
+SYMBOL TABLE OF MODULE:  SIO0TEST.ABS (SIO0TEST)
+
+VALUE           TYPE          NAME
+----------------------------------
+
+-------         MODULE        PRINTF
+D:0022H         PUBLIC        ?_PRINTF517?BYTE
+D:0022H         PUBLIC        ?_SPRINTF517?BYTE
+D:0022H         PUBLIC        ?_PRINTF?BYTE
+D:0022H         PUBLIC        ?_SPRINTF?BYTE
+C:02EFH         PUBLIC        _PRINTF
+C:02E9H         PUBLIC        _SPRINTF
+C:02EFH         PUBLIC        _PRINTF517
+C:02E9H         PUBLIC        _SPRINTF517
+-------         ENDMOD        PRINTF
+
+-------         MODULE        ?C_CLDPTR
+C:0610H         PUBLIC        ?C_CLDPTR
+-------         ENDMOD        ?C_CLDPTR
+
+-------         MODULE        ?C_CLDOPTR
+C:062BH         PUBLIC        ?C_CLDOPTR
+-------         ENDMOD        ?C_CLDOPTR
+
+-------         MODULE        ?C_CSTPTR
+C:065AH         PUBLIC        ?C_CSTPTR
+-------         ENDMOD        ?C_CSTPTR
+
+-------         MODULE        ?C_PLDIIDATA
+C:066EH         PUBLIC        ?C_PLDIIDATA
+-------         ENDMOD        ?C_PLDIIDATA
+
+-------         MODULE        ?C_CCASE
+C:067EH         PUBLIC        ?C_CCASE
+-------         ENDMOD        ?C_CCASE

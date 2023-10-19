@@ -1,0 +1,445 @@
+
+1]			HARDWARE SPECIFICATION
+
+1.1]	CABLING
+1.1.1]	- RS485:
+		Cable from local controller PC to sub rack,
+			or sub rack to sub rack.
+		D type 9 way male to female ( both ends )
+		Metal shell
+		Shielded cable 2 pair
+1.1.2]	- RS232
+		Cable from sub rack to controlled equipment.
+		D type 9 way female ( both ends )
+		Metal shell
+		Shielded cable 2 pair
+1.1.3]	- Parallel
+1.1.3.1]	MD & Opto-isol Sub- Rack to Antennae switches
+			D type 25 way female to open wires ( choc block )
+			Each cable split to two Antennae switches
+			Standard shielded 25 way
+1.1.3.2]	Stand alone MD to transmitter ( local/embedded MD's )
+			D type 25 way female to open wires
+			Standard shielded 25 way
+1.1.4]	- Power to sub racks and stand alone MD's from UPS/ Local power
+		3 pin 15 A to international kettle plug female
+1.1.5]	- Sub Rack internal ( see sub rack items )
+
+1.2]	MEDIATION DEVICE SUB-RACK
+1.2.1]	- PSU
+		Input:
+			250V AC
+		Output:
+			12V						?
+			5A ( ie 10 MD's or 5 MD's & 5 opto-isol )	?
+		Slot in
+1.2.2]	- Backplane
+		FRONT:
+			10x 64 way DIN ( R64-C1H Wire wrap type ) for MD's
+		BACK:
+			10x 64 way empty shroud on back of wire wrap pins
+			2X  3 pin connector for 485 bus
+			PSU connector
+		Common signals:
+			PSU: +12V, GND					?
+			RS485 bus ( twisted across backplane )
+1.2.3]	- Internal wiring	( between backplane and back plate )
+		To be made to order at instalation time by RADIO
+1.2.4]	- Back plate
+		EMC shielded ( Aluminium )
+		Punched holes for connectors, with cover plates for
+			unused holes.
+		Connectors:
+		RS232:
+			10x D type 9 way male	
+			IDC
+			1 for each MD
+		Parallel:
+			20x D type 25 way male
+			IDC
+			2 for each MD ( one for each 8255 )
+		RS485:
+			2x D type 9 way female
+			IDC
+			One on each side of plate
+		Power:
+			International Kettle plug ( male )
+1.2.5]	- Physical
+	EMI shielded
+	Fan
+1.2.6]	- Dimensions
+	Sub rack to fit into standard 19 inch rack
+1.2.7]	- Accesories:
+	Standard Eurocard Extender board ( 1 for each site )
+1.2.8]	- Types ( Defined by backplane to back plate wiring )
+	Cape town Radio coverage area
+1.2.8.1] Site: Klipheuwel
+		Marconi Transmitter drive unit control
+			Housed in Marconi Drive unit racks
+			In control room
+			Number Sub Racks Required:	3
+			Number of MD's per rack:	7
+			Type of control:		RS232
+			Extra MD's: ( in one of the 3 sub racks )
+			1 X	SPT: 			RS232
+			1 X	SPT: 			Parallel
+		CCA Transmitter drive unit control
+			Housed in rack between transmitters
+			In Transmitting hall
+			Number of sub-racks required:	1
+			Number of MD's per rack:	2
+			Type of control:		Parallel
+		Supervisory ( Alarms provisional )			?
+			Housed in existing rack
+			In control room
+			Number of sub-racks required:	1
+			Number MD's required:		2
+			Type of control:		Parallel
+1.2.8.2] Site: ZSC
+		Eddystone Reciever control
+			Housed in reciever rack
+			In equipment room
+			Number of sub-racks required:	3
+			Numbed of MD's per rack:	8
+			Type of control:		RS232
+		Antennae Switch control
+			Housed in antennae switch rack
+			In equipment room
+			Number of sub-racks required:	1
+			Number of MD's required:	5
+			Number antennae Opto boards:	5
+			Type of control:		Parallel
+		Miscellaneous device control/monitoring
+			Housed in existing rack
+			Numer of sub-racks required:	1
+			Number of MD's required:	4
+			Type of control:
+			1 X	BTS:				Serial	?
+			1 X	Autolink:			Par X 1
+			1 X	VHF Squelch/ PTT:		Par X 1
+			1 X	2182 KHz/ HF C&A RX Squelch:	Par X 1
+			1 X	Station Alarms			Par X 1
+1.2.8.3] Site: Controllable Remote Recieving Stations			4/5
+		Eddystone Reciever control
+			Housed in existing rack
+			In equipment room
+			Number of sub-racks required:	1 ( per station )
+			Number of MD's required:	3
+			Type of control:
+			2 X	Reciever			Serial
+			1 X	Station Alarms/supervisory	Par
+1.2.8.4] Site: Controllable Remote Transmitting Stations		2
+		Marconi 1kW Transmitter control
+			Housed in existing rack
+			In equipment room
+			Number of sub-racks required:	1 ( per station )
+			Number of MD's required:	3
+			Type of control:
+			2 X	Transmitter			Serial
+			1 X	Station Alarms/supervisory	Par
+
+1.3]	STAND ALONE MD CASE
+1.3.1]	- PSU current capability for one MD only
+1.3.2]	- Internal board connectors:
+		Mediation Device:
+			standard pin out 
+			DIN 41612 64 way connector
+1.3.3]	- Connectors
+		RS485:
+			D type 9 way female
+			Panel mount
+		RS232:
+			D type 9 way male
+			Pannel Mount
+		Parallel:
+			2x D type 25 way male
+			Panel mount
+		Power:
+			250V AC Standard Kettle socket with mains filter
+1.3.4]	- Internal Board
+		PSU
+		DIN 41612 male
+		Board mount Connectors
+1.3.5]	- Physical
+		EMI Shielded
+		Fan ( minature )
+1.3.6]	- Dimensions
+
+1.4]	MEDIATION CARDS
+1.4.1]	- PSU
+		RF suppresion
+		Regulated 5VDC +- 5%
+1.4.2]	- RS485 Port
+		UART Channel B
+		Control lines for driver from UART Output Port pins
+		LED indicator from output port pin
+		Line Fault line to UART Input Port
+1.4.3]	- RS232 Port
+		UART Channel A
+		LED indicator from output port pin
+		No handshaking
+1.4.4]	- Parallel Port
+		48x TTL level ( 2x 82C55A )
+		Bi- directional buffers
+		Input levels higher than 5V ( max 18V )
+1.4.5]	- Physical & dimensions
+		Size:
+			160x 100mm	( EUROCARD ) or
+			210x 100mm
+		Front pannel:
+			6 or 7 HP wide
+			Handle
+			Reset ( recessed )
+			LED indicators:
+				Power	( red )
+				Error	( red )
+				RS232	( green )
+				RS485	( green )
+1.4.6]	- Memmory
+		64K ROM
+		64K RAM	( Non Volatised )
+1.4.7]	- Peripheral Map ( XDATA )
+		RAM
+		8255 1
+		8255 2
+		UART
+1.4.8]	- MD Address selection
+		Dip switches to spare controller port
+1.4.9]	- DIN 41612, 64 way connector pin-out
+			A row			C row
+	1		+Vcc			+Vcc
+	2		GND			GND
+	3		GND RS485		'A' RS485
+	4		'B' RS485		GND RS232
+	5		TX RS485		RS RS485 
+	6	*	P1A0			P1A1
+	7		P1A2			P1A3
+	8		P1A4			P1A5
+	9		P1A6			P1A7
+	10		P1B0			P1B1
+	11		P1B2			P1B3
+	12		P1B4			P1B5
+	13		P1B6			P1B7
+	14		P1C0			P1C1
+	15		P1C2			P1C3
+	16		P1C4			P1C5
+	17		P1C6			P1C7
+	18		GND			GND
+	19		P2A0			P2A1
+	20		P2A2			P2A3
+	21		P2A4			P2A5
+	22		P2A6			P2A7
+	23		P2B0			P2B1
+	24		P2B2			P2B3
+	25		P2B4			P2B5
+	26		P2B6			P2B7
+	27		P2C0			P2C1
+	28		P2C2			P2C3
+	29		P2C4			P2C5
+	30		P2C6			P2C7
+	31		GND			GND
+	32		+Vcc			+Vcc
+	*	PNXM:	Buffered 8255 port pins
+			N:	8255 number	( 1 or 2 )
+			X:	Port id		( A, B, or C )
+			M:	Port bit	( 0 to 7 )
+
+1.5]	OPTO ISOLATED RELAY CARDS
+	Embedded ( inside transmitter )
+	16 channel modules
+	9 channels of each module populated with relays
+	( Eagle Electric / KOPP )
+1.5.1]	110V AC	Equipment control 					3
+	250V AC relays
+	max current							?
+	6 channels
+	2 modes
+	1 AC on/off
+1.5.2]	26V DC								2
+	80V DC relays
+	max current							?
+	6 channels
+	2 modes
+	1 AC on/off
+
+2]			SOFTWARE SPECIFICATION
+
+2.1]	COMMUNICATION SOFTWARE
+2.1.1]	RS485 Module ( COMMON BUS )
+2.1.1.1]- FSM ( control loop )
+2.1.1.2]- MODBUS
+2.1.1.3]- Parity
+2.1.1.4]- Error Handling
+		- error reporting/ logging
+		- error recovery
+2.1.2]	RS232 Module ( PROPRIETRY PROTOCOL )
+2.1.2.1]- FSM ( control loop )
+2.1.2.2]- Parity
+2.1.2.3]- Revertive time-out
+2.1.2.4]- Error Handling
+		- error reporting/ logging
+		- error recovery
+2.2]	MEDIATION STATE MACHINE
+2.2.1]	- FSM ( control loop )
+2.2.2]	- Address checking
+2.2.3]	- Command implimentation
+	- Common control language parsing
+	- CRC 
+2.2.2]	- Background functions
+	- On board diagnostics
+	- Equipment status polling
+2.3]	PROTOCOL CONVERSION FUNCTIONS
+2.3.1]	- Protocol transformation		( Common -> Proprietry )
+2.3.2]	- Inverse protocol transformation	( Proprietry -> Common )
+2.3.3]	- CRC
+2.3.4]	- Modularity ( Run time code modification )			?
+2.3.5]	- Data spaces
+2.3.5.1]	PLC Data Space:				( Tags Required )
+	Tags X2	Index	Hex	Description of contents
+		1	0x00	Communication Status
+		2	0x01	MD Status
+		3	0x02	Equipment Status ( including Squelch )
+	8	4	0x03	MD Address	( Including bus id )
+		5	0x04	Equipment Identifier 1
+		6	0x05	Equipment Identifier 2
+		7	0x06	Site Address
+		8	0x07	Equipment Type
+
+		9	0x08	Current RX Config ( byte 1 )
+	24	10	.	( byte 2 )
+		.	.
+		32	0x1F	Current RX Config ( byte 24 )
+
+		33	0x20	Current TX Config ( byte 1 )
+	24	34	.
+		.	.
+		56	0x37	Current TX Config ( byte 24 )
+
+		57	0x38	Communication field ( byte 1 )
+	24	58	.
+		.	.
+		81	0x4F	Communication field ( byte 24 )	
+	
+3]		CONTROL TYPES					Quantities
+
+3.1]	TRANSMITTERS						KLIPHEUWEL
+3.1.1]	- 110V Equipment:
+	MD for each transmitter
+	Seperately housed opto-isolated relays required
+3.1.1.1]	ITP :							1
+			-Control
+				6 channels
+				2 modes
+			-Revertive ( open or earth )
+				6 channels
+				2 modes
+				1 alarm
+			-Other
+				Case Required
+				Opto-isolated solid state relays internal
+				MD Embedded
+3.1.1.2]	CCA :							2
+			-Control
+				6 channels
+				2 modes
+			-Revertive ( open or earth )
+				6 channels
+				2 modes
+				1 alarm
+			-Other
+				Opto isolated solid state relays internal
+				MD in sub rack
+3.1.2]	- Parallel equipment TTL levels
+	MD for each transmitter
+3.1.2.1]	PLESSEY							8
+			-Control
+				28 channels
+				4 modes
+				1 change state pulse
+			-Revertive ( open or earth )
+				28 channels
+				4 modes
+				1 alarm
+			-Other
+				MD, psu 
+				front and back pannel containing space
+				pull down ( 7.5 mA )
+				no interface required
+3.1.2.2]	CONTINENTAL						2
+			-Control
+				6 channels
+				2 modes
+			-Revertives ( open or earth )
+				6 channels
+				2 modes
+				1 alarm
+			-Other
+				embedded 
+				case required
+				Interface required:
+					opto isolated relay
+					26V loop
+3.1.2.3]	SPT	1						1
+			-Control
+				18 channels
+				4 modes
+				1 AC on/off
+			-Revertive
+				18 channels
+				4 modes
+				1 alarm
+				1 AC on/off
+			-Other
+				sub rack mount
+				interface required ( internal )
+				( will be modified from RS232 to 
+					parallel internally)
+				5V pull down
+3.1.2.4]	AUTOLINK						ZSC
+			-Info
+				16/32 BTS channel ( in use indicator )
+			-Other
+				sub rack mount
+				interface required
+3.1.3]	- RS232 equipment
+	MD for each transmitter
+3.1.3.1]	SPT ( Ambasador )					1
+			-MD Sub Rack mount
+3.1.3.2]	MARCONI							5
+			-Control and revertive
+				serial, baud rate 9600
+			-Other
+				Racked, 7 per rack
+3.2]	RECIEVERS							ZSC
+	MD for each reciever
+3.2.1]	- RS232 equipment
+3.2.1.1]	EDDYSTONE						16
+			-Control and revertive
+				serial, baud rate 9600
+			-Other
+				Racked 8 per Rack
+				Equipment to be modified for 
+					TTL -> RS232 conversion
+3.3]	ANTENNAE SWITCHES					ZSC	15
+			-Control
+				10 channels ( marking pins ) 
+			-Other
+				pull down ( 38 mA, 24V ) ( opto-isolator )
+				racked
+				4 switches / MD
+3.4]	BTS ( 128 ) ( 100 audio ports )				ZSC	2
+			-Control
+				serial
+	or
+3.5]	BTS ( 200 ) ISX200 ( 200 audio ports )			ZSC	1
+			-Control
+				serial
+			
+3.5]	Squelch and PTT						ZSC	2
+			-Control
+				interface required ( due to neg input voltages )
+				press to talk: relay/opto-isolators -50 to GND
+				Squelch: open cir or GND ( pull up and diode )
+			-Other
+				BTS MD's can be used
+				( This should theoreticaly be handled by BTS )

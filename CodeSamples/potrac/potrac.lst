@@ -1,0 +1,381 @@
+C51 COMPILER V3.40,  POTRAC                                                                17/04/97  23:02:13  PAGE 1   
+
+
+DOS C51 COMPILER V3.40, COMPILATION OF MODULE POTRAC
+OBJECT MODULE PLACED IN POTRAC.OBJ
+COMPILER INVOKED BY: C:\C51\BIN\C51.EXE POTRAC.F
+
+stmt level    source
+
+   1          /************************************************************************/
+   2          /*		DEMO.F : Demonstration Code for uNode3			*/
+   3          /*		M.J.Colley '92						*/
+   4          /************************************************************************/
+   5          
+   6          #include	<inc.c>
+   7          
+   8          #define		ADCI_MASK	0xEF
+   9          #define		ADCS_MASK	0x08
+  10          char		adc[8];
+  11          unsigned char	i,j;
+  12          char	lcd_addr;
+  13          char	par_addr;
+  14          
+  15          void	init_adc	( )
+  16          {
+  17   1      	EAD=	1;
+  18   1      	ADCON=	0x08;
+  19   1      	j=	0;
+  20   1      }
+  21          
+  22          	init		( )
+  23          {
+  24   1      	EX1	= 1;				/* ENABLE XINT1		*/
+  25   1      	IT1	= 1;				/* XINT1 -> edge int	*/
+  26   1      	EA	= 1;				/* ENABLE GLOBAL INT	*/
+  27   1      	PX1	= 0;				/* EX1 -> LOW PRIORITY	*/
+  28   1      	lcd_addr= 0x82;
+  29   1      	init_lcd( );
+  30   1      	init_adc( );
+  31   1      }
+  32          
+  33          	service_pad	( char in )
+  34          {
+  35   1      	x1_flag=0;
+  36   1      	switch	( in )	
+  37   1      	{
+  38   2      	case 0x0C:	break;
+  39   2      	}
+  40   1      }
+  41          
+  42          void	adc_int		( ) interrupt 10
+  43          {
+  44   1      	adc[j]=ADCH;
+  45   1      	ADCON&=	ADCI_MASK;
+  46   1      	if (++j == 8) j=0;
+  47   1      	ADCON=	0x08+ j;
+  48   1      }
+  49          
+  50          	main		( )
+  51          {
+  52   1      	init	( );
+  53   1      	set_lcd	( LINE_1 );
+  54   1      	printf	( "    ADC Test    " );
+  55   1      	while	( 1 )
+C51 COMPILER V3.40,  POTRAC                                                                17/04/97  23:02:13  PAGE 2   
+
+  56   1      	{
+  57   2      		set_lcd	( LINE_1 );
+  58   2      		for	( i= 0; i<= 3; i++ )	printf	( " %02bX ",adc[i] );
+  59   2      		set_lcd	( LINE_2 );
+  60   2      		for	( i= 4; i<= 7; i++ )	printf	( " %02bX ",adc[i] );
+  61   2      	}
+  62   1      }
+C51 COMPILER V3.40,  POTRAC                                                                17/04/97  23:02:13  PAGE 3   
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+             ; FUNCTION set_date (BEGIN)
+                                           ; SOURCE LINE # 17
+                                           ; SOURCE LINE # 18
+                                           ; SOURCE LINE # 20
+0000 7800    R     MOV     R0,#date
+0002 7605          MOV     @R0,#05H
+                                           ; SOURCE LINE # 21
+0004 08            INC     R0
+0005 7623          MOV     @R0,#023H
+                                           ; SOURCE LINE # 22
+0007 08            INC     R0
+0008 7669          MOV     @R0,#069H
+                                           ; SOURCE LINE # 23
+000A 7FA0          MOV     R7,#0A0H
+000C 7D03          MOV     R5,#03H
+000E 7B00    R     MOV     R3,#LOW date
+0010 120000  E     LCALL   _start_sio1
+                                           ; SOURCE LINE # 24
+0013 22            RET     
+             ; FUNCTION set_date (END)
+
+             ; FUNCTION init_adc (BEGIN)
+                                           ; SOURCE LINE # 15
+                                           ; SOURCE LINE # 16
+                                           ; SOURCE LINE # 17
+0000 D2AE          SETB    EAD
+                                           ; SOURCE LINE # 18
+0002 75C508        MOV     ADCON,#08H
+                                           ; SOURCE LINE # 19
+0005 E4            CLR     A
+0006 F500    R     MOV     j,A
+                                           ; SOURCE LINE # 20
+0008 22            RET     
+             ; FUNCTION init_adc (END)
+
+             ; FUNCTION init (BEGIN)
+                                           ; SOURCE LINE # 22
+                                           ; SOURCE LINE # 23
+                                           ; SOURCE LINE # 24
+0000 D2AA          SETB    EX1
+                                           ; SOURCE LINE # 25
+0002 D28A          SETB    IT1
+                                           ; SOURCE LINE # 26
+0004 D2AF          SETB    EA
+                                           ; SOURCE LINE # 27
+0006 C2BA          CLR     PX1
+                                           ; SOURCE LINE # 28
+0008 750082  R     MOV     lcd_addr,#082H
+                                           ; SOURCE LINE # 29
+000B 120000  E     LCALL   init_lcd
+                                           ; SOURCE LINE # 30
+000E 120000  R     LCALL   init_adc
+                                           ; SOURCE LINE # 31
+0011 22            RET     
+             ; FUNCTION init (END)
+
+             ; FUNCTION _service_pad (BEGIN)
+;---- Variable 'in' assigned to Register 'R7' ----
+                                           ; SOURCE LINE # 33
+C51 COMPILER V3.40,  POTRAC                                                                17/04/97  23:02:13  PAGE 4   
+
+                                           ; SOURCE LINE # 34
+                                           ; SOURCE LINE # 35
+0000 C200    E     CLR     x1_flag
+                                           ; SOURCE LINE # 36
+0002 8000          SJMP    ?C0006
+                                           ; SOURCE LINE # 37
+                                           ; SOURCE LINE # 38
+                                           ; SOURCE LINE # 39
+                                           ; SOURCE LINE # 40
+0004         ?C0006:
+0004 22            RET     
+             ; FUNCTION _service_pad (END)
+
+             ; FUNCTION adc_int (BEGIN)
+0000 C0E0          PUSH    ACC
+0002 C0D0          PUSH    PSW
+0004 C000          PUSH    AR0
+                                           ; SOURCE LINE # 42
+                                           ; SOURCE LINE # 44
+0006 7400    R     MOV     A,#adc
+0008 2500    R     ADD     A,j
+000A F8            MOV     R0,A
+000B A6C6          MOV     @R0,ADCH
+                                           ; SOURCE LINE # 45
+000D 53C5EF        ANL     ADCON,#0EFH
+                                           ; SOURCE LINE # 46
+0010 0500    R     INC     j
+0012 E500    R     MOV     A,j
+0014 B40803        CJNE    A,#08H,?C0007
+0017 E4            CLR     A
+0018 F500    R     MOV     j,A
+001A         ?C0007:
+                                           ; SOURCE LINE # 47
+001A E500    R     MOV     A,j
+001C 2408          ADD     A,#08H
+001E F5C5          MOV     ADCON,A
+                                           ; SOURCE LINE # 48
+0020 D000          POP     AR0
+0022 D0D0          POP     PSW
+0024 D0E0          POP     ACC
+0026 32            RETI    
+             ; FUNCTION adc_int (END)
+
+             ; FUNCTION main (BEGIN)
+                                           ; SOURCE LINE # 50
+                                           ; SOURCE LINE # 51
+                                           ; SOURCE LINE # 52
+0000 120000  R     LCALL   init
+                                           ; SOURCE LINE # 53
+0003 7F80          MOV     R7,#080H
+0005 120000  E     LCALL   _set_lcd
+                                           ; SOURCE LINE # 54
+0008 7B05          MOV     R3,#05H
+000A 7A00    R     MOV     R2,#HIGH ?SC_0
+000C 7900    R     MOV     R1,#LOW ?SC_0
+000E 120000  E     LCALL   _printf
+0011         ?C0009:
+                                           ; SOURCE LINE # 55
+                                           ; SOURCE LINE # 56
+                                           ; SOURCE LINE # 57
+0011 7F80          MOV     R7,#080H
+0013 120000  E     LCALL   _set_lcd
+C51 COMPILER V3.40,  POTRAC                                                                17/04/97  23:02:13  PAGE 5   
+
+                                           ; SOURCE LINE # 58
+0016 E4            CLR     A
+0017 F500    R     MOV     i,A
+0019         ?C0011:
+0019 E500    R     MOV     A,i
+001B D3            SETB    C
+001C 9403          SUBB    A,#03H
+001E 5015          JNC     ?C0012
+0020 7B05          MOV     R3,#05H
+0022 7A00    R     MOV     R2,#HIGH ?SC_17
+0024 7900    R     MOV     R1,#LOW ?SC_17
+0026 7400    R     MOV     A,#adc
+0028 2500    R     ADD     A,i
+002A F8            MOV     R0,A
+002B E6            MOV     A,@R0
+002C F500    E     MOV     ?_printf?BYTE+03H,A
+002E 120000  E     LCALL   _printf
+0031 0500    R     INC     i
+0033 80E4          SJMP    ?C0011
+0035         ?C0012:
+                                           ; SOURCE LINE # 59
+0035 7FC0          MOV     R7,#0C0H
+0037 120000  E     LCALL   _set_lcd
+                                           ; SOURCE LINE # 60
+003A 750004  R     MOV     i,#04H
+003D         ?C0014:
+003D E500    R     MOV     A,i
+003F D3            SETB    C
+0040 9407          SUBB    A,#07H
+0042 50CD          JNC     ?C0009
+0044 7B05          MOV     R3,#05H
+0046 7A00    R     MOV     R2,#HIGH ?SC_17
+0048 7900    R     MOV     R1,#LOW ?SC_17
+004A 7400    R     MOV     A,#adc
+004C 2500    R     ADD     A,i
+004E F8            MOV     R0,A
+004F E6            MOV     A,@R0
+0050 F500    E     MOV     ?_printf?BYTE+03H,A
+0052 120000  E     LCALL   _printf
+0055 0500    R     INC     i
+0057 80E4          SJMP    ?C0014
+                                           ; SOURCE LINE # 61
+                                           ; SOURCE LINE # 62
+0059 22            RET     
+             ; FUNCTION main (END)
+
+C51 COMPILER V3.40,  POTRAC                                                                17/04/97  23:02:13  PAGE 6   
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+AA . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00DAH  1
+T0 . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B4H  1
+AC . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D6H  1
+T1 . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B5H  1
+ECM0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ECH  1
+EA . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00AFH  1
+ECM1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00EDH  1
+ECM2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00EEH  1
+CMI0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CCH  1
+CMI1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CDH  1
+CMI2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CEH  1
+T20V . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CFH  1
+ECT0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00E8H  1
+ECT1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00E9H  1
+ECT2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00EAH  1
+ECT3 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00EBH  1
+CTI0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C8H  1
+PCM0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FCH  1
+ADCH . . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C6H  1
+CTI1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C9H  1
+PCM1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FDH  1
+CTI2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CAH  1
+PCM2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FEH  1
+CTI3 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CBH  1
+RD . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B7H  1
+ENS1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00DEH  1
+PCT0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00F8H  1
+PCT1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00F9H  1
+PCT2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FAH  1
+RI . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0098H  1
+PCT3 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FBH  1
+SI . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00DBH  1
+INT0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B2H  1
+CY . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D7H  1
+TI . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0099H  1
+INT1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B3H  1
+date . . . . . . . . . . . . . . . . .  TYPEDEF  -----  STRUCT   -----  2
+  day. . . . . . . . . . . . . . . . .  MEMBER   -----  CHAR     0000H  1
+  month. . . . . . . . . . . . . . . .  MEMBER   -----  CHAR     0001H  1
+OV . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D2H  1
+x1_flag. . . . . . . . . . . . . . . .  EXTERN   DATA   BIT      -----  1
+main . . . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     -----  -----
+adc. . . . . . . . . . . . . . . . . .  PUBLIC   DATA   ARRAY    0000H  8
+WR . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B6H  1
+time . . . . . . . . . . . . . . . . .  TYPEDEF  -----  STRUCT   -----  3
+  second . . . . . . . . . . . . . . .  MEMBER   -----  CHAR     0000H  1
+  minute . . . . . . . . . . . . . . .  MEMBER   -----  CHAR     0001H  1
+  hour . . . . . . . . . . . . . . . .  MEMBER   -----  CHAR     0002H  1
+lcd_addr . . . . . . . . . . . . . . .  PUBLIC   DATA   CHAR     0008H  1
+init . . . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     -----  -----
+IE0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0089H  1
+IE1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008BH  1
+init_adc . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     -----  -----
+par_addr . . . . . . . . . . . . . . .  PUBLIC   DATA   CHAR     0009H  1
+_set_lcd . . . . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+CR0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D8H  1
+CR1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D9H  1
+C51 COMPILER V3.40,  POTRAC                                                                17/04/97  23:02:13  PAGE 7   
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+ES0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ACH  1
+ET0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A9H  1
+ES1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ADH  1
+ET1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ABH  1
+EAD. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00AEH  1
+TF0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008DH  1
+init_lcd . . . . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+ET2. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00EFH  1
+TF1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008FH  1
+RB8. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009AH  1
+EX0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A8H  1
+IT0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0088H  1
+set_date . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     -----  -----
+  date . . . . . . . . . . . . . . . .  STATIC   IDATA  ARRAY    0000H  3
+TB8. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009BH  1
+EX1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00AAH  1
+IT1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008AH  1
+P. . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D0H  1
+SM0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009FH  1
+SM1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009EH  1
+SM2. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009DH  1
+PS0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BCH  1
+PT0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B9H  1
+PS1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BDH  1
+PT1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BBH  1
+PAD. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BEH  1
+RS0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D3H  1
+adc_int. . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     -----  -----
+PT2. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FFH  1
+TR0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008CH  1
+RS1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D4H  1
+TR1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008EH  1
+PX0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B8H  1
+PX1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BAH  1
+REN. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009CH  1
+ADCON. . . . . . . . . . . . . . . . .  SFR      DATA   U_CHAR   00C5H  1
+i. . . . . . . . . . . . . . . . . . .  PUBLIC   DATA   U_CHAR   000AH  1
+STA. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00DDH  1
+j. . . . . . . . . . . . . . . . . . .  PUBLIC   DATA   U_CHAR   000BH  1
+_service_pad . . . . . . . . . . . . .  PUBLIC   CODE   PROC     -----  -----
+  in . . . . . . . . . . . . . . . . .  * REG *  DATA   CHAR     0007H  1
+RXD. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B0H  1
+_start_sio1. . . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+TXD. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B1H  1
+F0 . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D5H  1
+STO. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00DCH  1
+_printf. . . . . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    184    ----
+   CONSTANT SIZE    =     25    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     12    ----
+   IDATA SIZE       =      3    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+C51 COMPILER V3.40,  POTRAC                                                                17/04/97  23:02:13  PAGE 8   
+
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

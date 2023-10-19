@@ -1,0 +1,2 @@
+uart.obj to uart.abs RAMSIZE( 256 ) NOOVERLAY &
+PRINT( lnk.lst ) XDATA(4200H)

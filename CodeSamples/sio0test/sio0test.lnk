@@ -1,0 +1,2 @@
+sio0test.obj to sio0test.abs RAMSIZE( 256 ) NOOVERLAY PRINT( lnk.lst ) &
+XDATA(4200H)

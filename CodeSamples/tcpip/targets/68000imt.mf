@@ -1,0 +1,138 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# Intermetrics makefile for 68000 USNET
+ENDIAN=BIG		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+TRACE=3			#trace level, 0=none, 9=maximum
+
+BASE=403000		#load base: 10000 for the Cogent 68030 board
+			#	    403000 for the Motorola 68360 board
+
+DSPLY=1			#display device: 1 uses Motorola monitor function
+			#		 2 2681 in the Cogent 68030 board
+
+TIMER=1			#timer: 1 uses Motorola monitor function
+			#	2 PIP in the Cogent 68030 board
+			#	3 CPM in the 68360
+
+PTH = m:\public\itools	#where the compiler is
+
+#tool names =================================================================
+
+CC = $(PTH)\bin\c68332
+AS = $(PTH)\bin\asm68332
+INC = $(PTH)\rtlibs\lib332\inc
+CFLAGS = -L -j -no -o -d -P "TRACE=$(TRACE) $(ENDIAN) DSPLY=$(DSPLY) TIMER=$(TIMER)"
+LNK = $(PTH)\bin\llink
+LFLAGS = -c tmp.spc -o $*.ab -L $(PTH)\rtlibs\lib332\lib\lib332.l
+LIBR = $(PTH)\bin\libr
+
+#default rules ===========================================================
+.SUFFIXES: .map .dwn .ab .ol .s .c
+
+.c.ol:				# C to object
+	set PATH=$(PTH)\cmd
+	set I2INCLUDE=$(INC)
+	$(CC) $< $(CFLAGS)
+.c.s: 				# C to listing
+	set PATH=$(PTH)\cmd
+	set I2INCLUDE=$(INC)
+	$(CC) $< $(CFLAGS) -nf
+.s.ol:				# assembly to object
+	set PATH=$(PTH)\cmd
+	$(AS) $< $(AFLAGS)
+.ab.dwn:			# binary to hex
+	$(PTH)\bin\form $< -f pm -o $*.dwn
+	$(PTH)\bin\gsmap $< -o
+
+usnet.a:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.ol: ping.c $(INCS) icmp.h
+fttest.ol: fttest.c $(INCS)
+ltest.ol: ltest.c $(INCS)
+bootp.ol: bootp.c $(INCS)
+tftp.ol: tftp.c $(INCS)
+ftp.ol: ftp.c $(INCS)
+support.ol: support.c $(INCS) driver.h
+nprintf.ol: nprintf.c 
+nscanf.ol: nscanf.c 
+route.ol: route.c $(INCS)
+socket.ol: socket.c socket.h $(INCS)
+ip.ol: ip.c $(INCS)
+icmp.ol: icmp.c $(INCS) icmp.h
+arp.ol: arp.c $(INCS)
+rarp.ol: rarp.c $(INCS)
+ethernet.ol: ethernet.c $(INCS) ethernet.h
+slip.ol: slip.c $(INCS) 
+wrap.ol: wrap.c $(INCS)
+udp.ol: udp.c $(INCS)
+tcp.ol: tcp.c $(INCS)
+netconf.ol: netconf.c $(INCS) drvconf.h
+net.ol: net.c $(INCS)
+driver.ol: driver.c $(INCS) driver.h
+wd8003.ol: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.ol: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.ol: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.ol: i8250.c $(INCS) driver.h 
+d2681.ol: d2681.c $(INCS) driver.h
+hcsci11.ol: hcsci11.c $(INCS) driver.h
+hcsci16.ol: hcsci16.c $(INCS) driver.h
+h64180.ol: h64180.c $(INCS) driver.h
+suppa.ol: suppa.s
+start.ol: start.s
+
+#control files ============================================================
+
+tmp.spc:
+	echo MEMORY (#440000); >tmp.spc
+	echo LOCATE (init : #$(BASE) ); >>tmp.spc
+	echo LOCATE ( {code} {} {constant} {data} : AFTER #$(BASE) ); >>tmp.spc
+
+#building the libraries =====================================================
+
+usnet.a:	 netconf.ol net.ol socket.ol route.ol ftp.ol tftp.ol tcp.ol udp.ol ip.ol icmp.ol arp.ol rarp.ol ethernet.ol en360.ol slip.ol d2681.ol wrap.ol support.ol driver.ol suppa.ol nprintf.ol nscanf.ol clock.ol putchr.ol
+	-erase usnet.a
+	$(LIBR) netconf.ol net.ol socket.ol route.ol ftp.ol -L usnet.a 
+	$(LIBR) tftp.ol tcp.ol udp.ol ip.ol icmp.ol arp.ol rarp.ol -L usnet.a
+	$(LIBR) ethernet.ol en360.ol slip.ol -L usnet.a
+	$(LIBR) d2681.ol wrap.ol nprintf.ol nscanf.ol support.ol -L usnet.a
+	$(LIBR) driver.ol clock.ol putchr.ol suppa.ol -L usnet.a
+
+#building the programs =====================================================
+
+emtest:	emtest.dwn
+emtest.ab:	tmp.spc start.ol emtest.ol usnet.a
+	set PATH=$(PTH)\cmd
+	$(LNK) start.ol $*.ol -L usnet.a $(LFLAGS)
+
+ltest:	ltest.dwn
+ltest.ab:	tmp.spc start.ol ltest.ol usnet.a
+	set PATH=$(PTH)\cmd
+	set I2INCLUDE=$(INC)
+	$(CC) net.c $(CFLAGS) -P "WRAPTEST"
+	$(CC) support.c $(CFLAGS) -P "WRAPTEST"
+	$(LNK) start.ol $*.ol net.ol support.ol -L usnet.a $(LFLAGS)
+	erase net.ol
+	erase support.ol
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.xrf
+	erase *.dwn
+	erase *.ab
+	erase *.ol
+	erase *.map
+	erase *.psa
+	erase tmp.*
+	erase usnet.a
+

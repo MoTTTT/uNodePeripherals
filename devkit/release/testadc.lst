@@ -1,0 +1,101 @@
+C51 COMPILER V3.40,  TESTADC                                                               13/01/99  10:28:37  PAGE 1   
+
+
+DOS C51 COMPILER V3.40, COMPILATION OF MODULE TESTADC
+OBJECT MODULE PLACED IN TESTADC.OBJ
+COMPILER INVOKED BY: C:\C51\BIN\C51.EXE TESTADC.C LA
+
+stmt level    source
+
+   1          /*			Copyright Q Solutions				*/
+   2          /*	File:		testadc.c					*/
+   3          /*	Programmer:	MoT						*/
+   4          /*	Module:		Library routine test program (nodelcd,adc)	*/
+   5          /*									*/
+   6          /*			History						*/
+   7          /* 15:58 20/04/1997  	Written from scratch				*/
+   8          /*			Initialisation and main loop.			*/
+   9          /* 22:11 29/03/1998 	Cleaned up for release.				*/
+  10          /*									*/
+  11          
+  12          #pragma		ROM (COMPACT)
+  13          #pragma		LARGE
+  14          
+  15          /* Standard Library Header Files					*/
+  16          #include	<stdio.h>
+  17          #include	<reg552.h>
+  18          
+  19          typedef	unsigned int uint;		/* Optimise for size & speed:	*/
+  20          typedef	unsigned char byte;		/* Use unsigned char and int	*/
+  21          
+  22          /* uNode Developer's Kit Library Header Files				*/
+  23          #include	<adc.h>			/* Analog to Digital routines	*/
+*** ERROR 141 IN LINE 9 OF E:\QSOLUTIO\QTRON\NODELIB\INC\ADC.H: syntax error near 'byte'
+  24          #include	<nodelcd.h>		/* Local LCD module routines	*/
+  25          #include	<wdog.h>		/* Watchdog refresh routine	*/
+  26          
+  27          #define		IIC_ADDR 0x68		/* IIC Slave Address		*/
+  28          #define		REM_ADDR 0x60		/* IIC Remote Address		*/
+  29          #define		IO_NLCD	0x01		/* Output to uNode LCD		*/
+  30          
+  31          const char *signon1= " \xe4Node Dev. Kit ";/* Line 1 of sign on screen	*/
+*** ERROR 247 IN LINE 31 OF TESTADC.C: non-address/-constant initializer
+  32          const char *signon2= "Q Solutions 1998";/* Line 2 of signon screen	*/
+*** ERROR 247 IN LINE 32 OF TESTADC.C: non-address/-constant initializer
+  33          
+  34          char	out_stream= IO_NLCD;		/* Output port			*/
+*** ERROR 247 IN LINE 34 OF TESTADC.C: non-address/-constant initializer
+  35          
+  36          void	signon		( )		/* Splash Screen		*/
+  37          {
+  38   1      	paint_nlcd ( signon1, signon2 );
+  39   1      }
+  40          
+  41          void	initialise	( )		/* Initialise Hardware		*/
+  42          {
+  43   1      	EA=		1;		/* Enable Global Interrupt	*/
+  44   1      	init_nlcd	( );		/* Initialise local LCD		*/
+  45   1      	signon		( );		/* Splash screen		*/
+  46   1      	init_adc	( );		/* Initialise Analog -> Digital	*/
+  47   1      }
+  48          
+  49          char	putchar		( char out )
+  50          {
+  51   1      	switch	( out_stream )
+  52   1      	{
+  53   2      	case IO_NLCD:			/* Write to local LCD		*/
+  54   2      		nputchar	( out );
+  55   2      		break;
+C51 COMPILER V3.40,  TESTADC                                                               13/01/99  10:28:37  PAGE 2   
+
+  56   2      	}
+  57   1      	return	( out );
+  58   1      }
+  59          
+  60          void	show_adc( void )		/* Print adc results 		*/
+  61          {
+  62   1      byte	i;
+  63   1      	set_nlcd( NLCD_L1 );		/* Set cursor to line 1		*/
+  64   1      	for	( i= 0; i<= 3; i++ )
+  65   1      		printf	( "%03bu ",adc[i] );	/* Print first results	*/
+  66   1      	set_nlcd( NLCD_L2 );		/* Set cursor to line 2		*/
+  67   1      	for	( i= 4; i<= 7; i++ )	
+  68   1      		printf	( "%03bu ",adc[i] );	/* Print the rest	*/
+  69   1      }
+  70          
+  71          void	main	( void )		/* Main Loop			*/
+  72          {
+  73   1      uint	wait= 1;			/* Signon pause counter		*/
+  74   1      	initialise	( );		/* Set up drivers, sign on	*/
+  75   1      	while	( wait++ )		/* Wait a while			*/
+  76   1      		wdog	( 10 );		/* Refresh watchdog		*/
+  77   1      	while	( 1 )
+  78   1      	{
+  79   2      		wdog	( 10 );		/* Refresh watchdog		*/
+  80   2      		adc_start( );		/* Start conversion (8 channels)*/
+  81   2      		while	( adc_read );	/* Wait for completion		*/
+  82   2      		show_adc( );		/* Print results to the screen	*/
+  83   2      	}
+  84   1      }
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  4 ERROR(S)

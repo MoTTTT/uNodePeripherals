@@ -1,0 +1,189 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# * MAKEFILE.  Edition: 6  Last changed: 16-Nov-93,14:36:30  By: HARRY *
+#  +++=>>> '%l'
+# Currently extracted for edit by: '***_NOBODY_***'
+#
+# Borland makefile for real mode 8086 USNET
+ENDIAN=LITTLE   	#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+FARDEF=far		#use this in CFLAGS if segmented 
+
+MMODL=s			#memory model
+
+TRACE=3			#trace level, 0=none, 9=maximum
+
+PTH=m:\public\bc31	#where the compiler is
+
+#path and tool names ======================================================
+
+CC = $(PTH)\bin\bcc
+AS = $(PTH)\bin\tasm
+LNK = $(PTH)\bin\tlink
+LIBR = $(PTH)\bin\tlib
+LIB = usnet+c$(MMODL)
+LFLAGS = /s /m /v c0$(MMODL)
+CFLAGS = /c /m$(MMODL) /v /DTRACE=$(TRACE) /D$(ENDIAN) /DFARDEF=far
+AFLAGS = /ml /DMMODL='$(MMODL)'
+
+#default rules ===========================================================
+
+.c.obj:
+	$(CC) $(CFLAGS) $<
+.c.s:
+	$(CC) /S $(CFLAGS) $<
+	ren $*.asm $*.s
+.asm.obj:
+	$(AS) $< $(AFLAGS)
+
+usnet.lib:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.obj: ping.c $(INCS) icmp.h
+fttest.obj: fttest.c $(INCS)
+ltest.obj: ltest.c $(INCS)
+sotest.obj: sotest.c socket.h $(INCS) 
+telnet.obj: telnet.c telnet.h $(INCS) 
+tnserv.obj: tnserv.c telnet.h $(INCS) 
+bootp.obj: bootp.c $(INCS)
+tftp.obj: tftp.c $(INCS)
+ftp.obj: ftp.c $(INCS)
+support.obj: support.c $(INCS) driver.h
+nprintf.obj: nprintf.c 
+nscanf.obj: nscanf.c 
+route.obj: route.c $(INCS)
+socket.obj: socket.c socket.h $(INCS)
+ip.obj: ip.c $(INCS)
+icmp.obj: icmp.c $(INCS) icmp.h
+arp.obj: arp.c $(INCS)
+rarp.obj: rarp.c $(INCS)
+ethernet.obj: ethernet.c $(INCS) ethernet.h
+slip.obj: slip.c $(INCS) 
+wrap.obj: wrap.c $(INCS)
+udp.obj: udp.c $(INCS)
+tcp.obj: tcp.c $(INCS)
+netconf.obj: netconf.c $(INCS) drvconf.h
+net.obj: net.c $(INCS)
+driver.obj: driver.c $(INCS) driver.h
+wd8003.obj: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne1000.obj: ne1000.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.obj: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+ne2100.obj: ne2100.c $(INCS) driver.h ethernet.h am7990.h
+exp16.obj: exp16.c $(INCS) driver.h ethernet.h i82586.h
+en360.obj: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.obj: i8250.c $(INCS) driver.h 
+d2681.obj: d2681.c $(INCS) driver.h
+hcsci11.obj: hcsci11.c $(INCS) driver.h
+hcsci16.obj: hcsci16.c $(INCS) driver.h
+h64180.obj: h64180.c $(INCS) driver.h
+suppa.obj: suppa.asm
+
+#building the libraries =====================================================
+
+usnet.lib:	 netconf.obj net.obj socket.obj route.obj ftp.obj tftp.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj wd8003.obj ne1000.obj ne2000.obj ne2100.obj exp16.obj slip.obj i8250.obj d2681.obj wrap.obj support.obj driver.obj suppa.obj nprintf.obj nscanf.obj
+	-erase usnet.lib
+	$(LIBR) usnet.lib +netconf.obj+net.obj+socket.obj+route.obj+ftp.obj
+	$(LIBR) usnet.lib +tftp.obj+tcp.obj+udp.obj+ip.obj+icmp.obj+arp.obj
+	$(LIBR) usnet.lib +rarp.obj+ethernet.obj+wd8003.obj+ne1000.obj
+	$(LIBR) usnet.lib +ne2000.obj+ne2100.obj+exp16.obj+slip.obj+i8250.obj
+	$(LIBR) usnet.lib +d2681.obj+wrap.obj+nprintf.obj+nscanf.obj
+	$(LIBR) usnet.lib +support.obj+driver.obj+suppa.obj 
+
+#building the programs =====================================================
+
+ping:	ping.obj usnet.lib
+	$(LNK) $(LFLAGS) $*,$*,,$(LIB)
+
+telnet:	telnet.obj usnet.lib
+	$(LNK) $(LFLAGS) $*,$*,,$(LIB)
+
+tnserv:	tnserv.obj usnet.lib
+	$(LNK) $(LFLAGS) $*,$*,,$(LIB)
+
+fttest:	fttest.obj usnet.lib
+	$(LNK) $(LFLAGS) $*,$*,,$(LIB)
+
+bench:	bench.obj usnet.lib
+	$(LNK) $(LFLAGS) $*,$*,,$(LIB)
+
+emtest:	emtest.obj usnet.lib
+	$(LNK) $(LFLAGS) $*,$*,,$(LIB)
+
+sotest:	sotest.obj usnet.lib
+	$(LNK) $(LFLAGS) $*,$*,,$(LIB)
+
+boot:	boot.obj bootp.obj usnet.lib
+	$(LNK) $(LFLAGS) $*+bootp,$*,,$(LIB)
+
+ltest:	ltest.obj route.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj slip.obj wrap.obj nprintf.obj nscanf.obj putchr.obj
+	$(CC) $(CFLAGS) /DWRAPTEST net.c
+	$(CC) $(CFLAGS) /DWRAPTEST support.c
+	echo $(LFLAGS) $* net route tcp udp ip icmp arp rarp ethernet+ >tmp.lnk
+	echo slip wrap nprintf nscanf support putchr,$*,,c$(MMODL) >>tmp.lnk
+	$(LNK) @tmp.lnk
+	erase net.obj
+	erase support.obj
+
+mttest:	mttest.obj net.obj route.obj netconf.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj slip.obj wrap.obj driver.obj wd8003.obj ne2000.obj ne2100.obj i8250.obj support.obj nprintf.obj nscanf.obj suppa.obj
+	echo $(LFLAGS) $* netconf net route tcp udp ip icmp arp rarp ethernet+ >tmp.lnk
+	echo slip wrap driver wd8003 ne2000 ne2100 i8250 nprintf nscanf support suppa+ >>tmp.lnk
+	echo \mt86\mtcore \mt86\mtsched \mt86\getput \mt86\usrclkc \mt86\usrclk,$*,,c$(MMODL) >>tmp.lnk
+	$(LNK) @tmp.lnk
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.obj
+	erase *.map
+	erase *.tmp
+	erase tmp.*
+	erase usnet.lib
+
+DEST=p:\products\usnet
+inst:
+	cp net.h icmp.h ethernet.h support.h telnet.h $(DEST)
+	cp net.c route.c tftp.c ftp.c ip.c icmp.c arp.c rarp.c $(DEST)
+	cp tcp.c udp.c support.c ethernet.c slip.c $(DEST)
+	cp wrap.c nprintf.c nscanf.c ping.c boot.c fttest.c emtest.c $(DEST)
+	cp socket.c socket.h ltest.c bootp.c telnet.c tnserv.c $(DEST)
+	cp m360.h ns8390.h am7990.h i82586.h h64180.c hc11sci.c $(DEST)
+	cp hc16sci.c d2681.c i8250.c en360.c wd8003.c ne1000.c $(DEST)
+	cp ne2000.c ne2100.c mb86960.c exp16.c bench.c $(DEST)
+	cp sotest.c mttest.c vsnlog.txt readme.txt vsn.bat vsn install.bat $(DEST)
+	dos2unix install $(DEST)\install
+	-mkdir $(DEST)\i8086
+	xcopy i8086 $(DEST)\i8086 /s/e/v
+	-mkdir $(DEST)\i386
+	xcopy i386 $(DEST)\i386 /s/e/v
+	-mkdir $(DEST)\sparc
+	xcopy sparc $(DEST)\sparc /s/e/v
+	-mkdir $(DEST)\m68k
+	xcopy m68k $(DEST)\m68k /s/e/v
+	-mkdir $(DEST)\z180
+	xcopy z180 $(DEST)\z180 /s/e/v
+	-mkdir $(DEST)\hc11
+	xcopy hc11 $(DEST)\hc11 /s/e/v
+	-mkdir $(DEST)\hc16
+	xcopy hc16 $(DEST)\hc16 /s/e/v
+	-mkdir $(DEST)\i8096
+	xcopy i8096 $(DEST)\i8096 /s/e/v
+	-mkdir $(DEST)\i960
+	xcopy i960 $(DEST)\i960 /s/e/v
+	-mkdir $(DEST)\mips
+	xcopy mips $(DEST)\mips /s/e/v
+
+SDEST=p:\common\harry
+save:
+	cp makefile net.h icmp.h ethernet.h support.h driver.h ns8390.h $(SDEST)
+	cp netconf.c net.c tftp.c ftp.c ip.c icmp.c arp.c rarp.c tcp.c $(SDEST)
+	cp udp.c support.c driver.c ethernet.c wd8003.c ne2000.c slip.c $(SDEST)
+	cp i8250.c wrap.c nprintf.c nscanf.c ping.c boot.c route.c $(SDEST)
+	cp socket.c socket.h fttest.c ltest.c bootp.c mttest.c $(SDEST)
+	cp local.h sotest.c mttest.c suppa.asm d2681.c emtest.c $(SDEST)
+	cp bench.c hc16sci.c hc11sci.c h64180.c drvconf.h $(SDEST)
+	cp am7990.h ne2100.c i82586.h exp16.c $(SDEST)
+

@@ -1,0 +1,148 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# * MAKEFILE.  Edition: 3  Last changed: 2-Nov-93,9:26:54  By: HARRY *
+#  +++=>>> '%l'
+# Currently extracted for edit by: '***_NOBODY_***'
+#
+# Archimedes makefile for Intel 8051 USNET
+ENDIAN=LITTLE	   		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+TRACE=3				#trace level, 0=none, 9=maximum
+
+PTH = m:\public\archimds\8051	#Directory where compiler is kept
+
+#tool names =================================================================
+
+CC = $(PTH)\c-51
+AS = $(PTH)\a8051
+LNK = $(PTH)\xlink
+INI = startup.r03
+LIB = $(PTH)\cl8051l.r03
+CFLAGS = -ml -D$(ENDIAN) -DTRACE=$(TRACE)
+AFLAGS = 
+LFLAGS = -c8051 -o $*.dwn -l $*.map -D_R=0 -x
+LIBR = $(PTH)\xlib
+
+#default rules ===========================================================
+.SUFFIXES: .r03 .c .s
+
+.s.r03:				# assembly to object
+	$(AS) $< $(AFLAGS)
+.c.r03:					# C to object
+	set C_INCLUDE=$(PTH)\ 
+	set PATH=$(PTH)\bin
+	$(CC) $< $(CFLAGS)
+.c.lst:					# C to list
+	set C_INCLUDE=$(PTH)\ 
+	set PATH=$(PTH)\bin
+	$(CC) $< $(CFLAGS) -L -q
+
+usnet.lib:				#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.r03: ping.c $(INCS) icmp.h
+fttest.r03: fttest.c $(INCS)
+ltest.r03: ltest.c $(INCS)
+bootp.r03: bootp.c $(INCS)
+tftp.r03: tftp.c $(INCS)
+ftp.r03: ftp.c $(INCS)
+support.r03: support.c $(INCS) driver.h
+nprintf.r03: nprintf.c 
+nscanf.r03: nscanf.c 
+route.r03: route.c $(INCS)
+socket.r03: socket.c socket.h $(INCS)
+ip.r03: ip.c $(INCS)
+icmp.r03: icmp.c $(INCS) icmp.h
+arp.r03: arp.c $(INCS)
+ethernet.r03: ethernet.c $(INCS) ethernet.h
+slip.r03: slip.c $(INCS) 
+wrap.r03: wrap.c $(INCS)
+udp.r03: udp.c $(INCS)
+tcp.r03: tcp.c $(INCS)
+netconf.r03: netconf.c $(INCS) drvconf.h
+net.r03: net.c $(INCS)
+driver.r03: driver.c $(INCS) driver.h
+wd8003.r03: wd8003.c $(INCS) driver.h ethernet.h ne2000.h
+ne2000.r03: ne2000.c $(INCS) driver.h ethernet.h ne2000.h
+en360.r03: en360.c $(INCS) driver.h ethernet.h ne2000.h
+i8250.r03: i8250.c $(INCS) driver.h 
+d2681.r03: d2681.c $(INCS) driver.h
+hcsci11.r03: hcsci11.c $(INCS) driver.h
+hcsci16.r03: hcsci16.c $(INCS) driver.h
+h64180.r03: h64180.c $(INCS) driver.h
+suppa.r03: suppa.s
+putchr.r03: putchr.s
+start.r03: start.s
+
+#building the libraries =====================================================
+
+usnet.lib:	 netconf.r03 net.r03 route.r03 tcp.r03 udp.r03 ip.r03 icmp.r03 slip.r03 hc11sci.r03 wrap.r03 support.r03 driver.r03 nprintf.r03 nscanf.r03 putchr.r03 start.r03
+	erase usnet.lib
+	echo DEFINE-CPU 68HC11 >tmp.par
+	echo F-M netconf.r03 usnet.lib >>tmp.par
+	echo F-M net.r03 usnet.lib >>tmp.par
+	echo F-M route.r03 usnet.lib >>tmp.par
+	echo F-M tcp.r03 usnet.lib >>tmp.par
+	echo F-M udp.r03 usnet.lib >>tmp.par
+	echo F-M ip.r03 usnet.lib >>tmp.par
+	echo F-M icmp.r03 usnet.lib >>tmp.par
+	echo F-M slip.r03 usnet.lib >>tmp.par
+	echo F-M hc11sci.r03 usnet.lib >>tmp.par
+	echo F-M wrap.r03 usnet.lib >>tmp.par
+	echo F-M nprintf.r03 usnet.lib >>tmp.par
+	echo F-M nscanf.r03 usnet.lib >>tmp.par
+	echo F-M support.r03 usnet.lib >>tmp.par
+	echo F-M driver.r03 usnet.lib >>tmp.par
+	echo F-M putchr.r03 usnet.lib >>tmp.par
+	echo EXIT >>tmp.par
+	$(LIBR) tmp.par
+
+#building the programs =====================================================
+# Load and test with "ice ltest.dwn", use "nmake init" to set path.
+
+emtest:	emtest.r03 usnet.lib
+	set PATH=$(PTH)\bin
+	echo $(LFLAGS) >tmp.lnk
+	echo -Z(DATA)C_ARGD,D_UDATA,D_IDATA=8 >>tmp.lnk
+	echo -Z(IDATA)C_ARGI,I_UDATA,I_IDATA,CSTACK >>tmp.lnk
+	echo -Z(XDATA)C_ARGX,X_UDATA,X_IDATA,ECSTR,RF_XDATA=1000 >>tmp.lnk
+	echo -Z(CODE)INTVEC,RCODE,D_CDATA,I_CDATA,X_CDATA,C_ICALL,C_RECFN,CSTR,CCSTR,CODE,CONST=0 >>tmp.lnk
+	echo emtest.r03  >>tmp.lnk
+	echo -C usnet.lib $(LIB) >>tmp.lnk
+	$(LNK) -f tmp.lnk
+
+ltest:	ltest.r03 route.r03 tcp.r03 udp.r03 ip.r03 icmp.r03 slip.r03 wrap.r03 nprintf.r03 nscanf.r03 putchr.r03 start.r03
+ltest:	ltest.r03 route.r03 tcp.r03 udp.r03 ip.r03 icmp.r03 slip.r03 wrap.r03 nprintf.r03 nscanf.r03 putchr.r03 start.r03
+	set C_INCLUDE=$(PTH)\ 
+	set PATH=$(PTH)\bin
+	$(CC) net.c $(CFLAGS) -DWRAPTEST
+	$(CC) support.c $(CFLAGS) -DWRAPTEST
+	echo $(LFLAGS) >tmp.lnk
+	echo -Z(DATA)C_ARGD,D_UDATA,D_IDATA=8 >>tmp.lnk
+	echo -Z(IDATA)C_ARGI,I_UDATA,I_IDATA,CSTACK >>tmp.lnk
+	echo -Z(XDATA)C_ARGX,X_UDATA,X_IDATA,ECSTR,RF_XDATA=1000 >>tmp.lnk
+	echo -Z(CODE)INTVEC,RCODE,D_CDATA,I_CDATA,X_CDATA,C_ICALL,C_RECFN,CSTR,CCSTR,CODE,CONST=0 >>tmp.lnk
+	echo start.r03 ltest.r03 net.r03 route.r03 tcp.r03 udp.r03 >>tmp.lnk
+	echo ip.r03 icmp.r03 slip.r03 wrap.r03 >>tmp.lnk
+	echo nprintf.r03 nscanf.r03 support.r03 putchr.r03 >>tmp.lnk
+	echo -C $(LIB) >>tmp.lnk
+	-$(LNK) -f tmp.lnk
+	erase net.r03
+	erase support.r03
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.r03
+	erase *.map
+	erase *.tmp
+	erase *.lst
+	erase tmp.*
+	erase usnet.lib
+
+init:
+	map s15:=m:\public\metalink\im51

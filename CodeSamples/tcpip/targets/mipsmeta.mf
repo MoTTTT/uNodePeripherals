@@ -1,0 +1,130 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# Metaware makefile for MIPS USNET
+ENDIAN=BIG		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+TRACE=3			#trace level, 0=none, 9=maximum
+			#NOTE: IDT 7RS385 Board standard output kills port B
+
+PTH=o:\public\epi\r3000	#where the compiler is
+
+#tool names =================================================================
+
+CC = $(PTH)\bin\hc
+LL = $(PTH)\bin\eld
+AS = $(PTH)\bin\eas
+CFLAGS = -g -c -DTRACE=$(TRACE) -D$(ENDIAN)
+AFLAGS = -I$(PTH)\include 
+LFLAGS = -o $*.dwn -a -x0x80002000 -e start
+START = $(PTH)\LIB\crt0.o
+LIB = $(PTH)\LIB\libcb8i.a
+LIBR = $(PTH)\bin\elib
+
+#default rules ===========================================================
+.SUFFIXES: .dwn .out .o .s .c
+
+.c.o:				# C to object
+	set PATH=$(PTH)\bin
+	set HCDIR=$(PTH)
+	set HCINC=$(PTH)\include
+	$(CC) $(CFLAGS) $< 
+.c.s:	 			# C to assembly
+	set PATH=$(PTH)\bin
+	set HCDIR=$(PTH)
+	set HCINC=$(PTH)\include
+	$(CC) -g -S -Hanno $<
+.s.o:				# assembly to object
+	$(AS) $(AFLAGS) $<
+
+usnet.a:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.o: ping.c $(INCS) icmp.h
+fttest.o: fttest.c $(INCS)
+ltest.o: ltest.c $(INCS)
+bootp.o: bootp.c $(INCS)
+tftp.o: tftp.c $(INCS)
+ftp.o: ftp.c $(INCS)
+support.o: support.c $(INCS) driver.h
+nprintf.o: nprintf.c 
+nscanf.o: nscanf.c 
+route.o: route.c $(INCS)
+socket.o: socket.c socket.h $(INCS)
+ip.o: ip.c $(INCS)
+icmp.o: icmp.c $(INCS) icmp.h
+arp.o: arp.c $(INCS)
+rarp.o: rarp.c $(INCS)
+ethernet.o: ethernet.c $(INCS) ethernet.h
+slip.o: slip.c $(INCS) 
+wrap.o: wrap.c $(INCS)
+udp.o: udp.c $(INCS)
+tcp.o: tcp.c $(INCS)
+netconf.o: netconf.c $(INCS) drvconf.h
+net.o: net.c $(INCS)
+driver.o: driver.c $(INCS) driver.h
+wd8003.o: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.o: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.o: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.o: i8250.c $(INCS) driver.h 
+d2681.o: d2681.c $(INCS) driver.h
+hcsci11.o: hcsci11.c $(INCS) driver.h
+hcsci16.o: hcsci16.c $(INCS) driver.h
+h64180.o: h64180.c $(INCS) driver.h
+putchr.o: putchr.c
+suppa.o: suppa.s
+intrrupt.o: intrrupt.s
+clock.o: clock.s
+
+#building of libraries =====================================================
+
+usnet.a: netconf.o net.o route.o ftp.o tftp.o tcp.o udp.o ip.o icmp.o arp.o rarp.o ethernet.o slip.o d2681.o wrap.o support.o driver.o suppa.o nprintf.o nscanf.o socket.o putchr.o clock.o intrrupt.o
+	$(LIBR) -q usnet.a netconf.o net.o route.o ftp.o tftp.o tcp.o 
+	$(LIBR) -q usnet.a udp.o ip.o icmp.o arp.o rarp.o ethernet.o
+	$(LIBR) -q usnet.a slip.o d2681.o wrap.o  
+	$(LIBR) -q usnet.a nprintf.o socket.o nscanf.o support.o 
+	$(LIBR) -q usnet.a driver.o suppa.o putchr.o clock.o intrrupt.o
+
+#building the programs =====================================================
+
+emtest:	emtest.o usnet.a
+	$(LL) $(LFLAGS) $(START) $*.o usnet.a $(LIB) >$*.map 
+
+ltest:	ltest.o route.o tcp.o udp.o ip.o icmp.o arp.o rarp.o ethernet.o slip.o wrap.o nprintf.o nscanf.o putchr.o 
+	echo $(START) ltest.o net.o route.o tcp.o udp.o ip.o >tmp.lnk
+	echo icmp.o arp.o rarp.o ethernet.o slip.o wrap.o nprintf.o >>tmp.lnk
+	echo nscanf.o support.o putchr.o >>tmp.lnk
+	echo $(LIB) >>tmp.lnk
+	set PATH=$(PTH)\bin
+	set HCDIR=$(PTH)
+	set HCINC=$(PTH)\include
+	$(CC) $(CFLAGS) -DWRAPTEST net.c
+	$(CC) $(CFLAGS) -DWRAPTEST support.c
+	$(LL) $(LFLAGS) @tmp.lnk >$*.map 
+	erase net.o
+	erase support.o
+
+#utility functions  =======================================================
+#to test using the EPI tools and the IDT evaluation board:
+#	connect J2 to COM1 (straight)
+#	nmake init
+#	monrss -v3051 -5 ltest.dwn
+#	g
+
+init:
+	map s15:=$(PTH)\bin
+
+clean:
+	erase *.lst
+	erase *.dwn
+	erase *.o
+	erase *.map
+	erase tmp.*
+	erase usnet.a
+

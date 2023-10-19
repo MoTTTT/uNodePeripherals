@@ -1,0 +1,222 @@
+
+
+			uNode Developers Kit Release 0.1
+
+				REFERENCE MANUAL
+
+			      Copyright Q Solutions
+
+
+Document:	uNode Developers Kit Library REFERENCE MANUAL
+File:		dmanualX.txt
+Author:		MoT
+Last Revised:	02:00 25/03/1998
+Revision:	0.1
+Status:		Beta, NDA
+
+Introduction
+This manual lists the uNode library routines, and provides guidance on how
+to use them. The contents of each of the header files is dealt with in
+turn. The module and header file names, a description of the module, public
+data and functions, and the usage of each module is noted.
+
+Module:		adc
+Header File:	adc.h
+Description:	Analog to digital converter functions
+
+Public Data:
+byte	adc[];					/* ADC results		*/
+bit	adc_read;				/* ADC busy flag	*/
+
+Public Functions:
+void	init_adc	( void );		/* Init A->D Converter	*/
+void	adc_start	( void );		/* Start ADC conversion	*/
+
+Usage:
+To prepare the built in analog to digital converter for use, the function
+'init_adc()' should be called. This sets up the ADC control register, and
+enables the ADC interrupt.
+The function 'adc_start()' can be called to start a set of conversions.
+The eight most significant bits of the result of the conversions for each 
+of the eight channels are stored in the array 'adc[0..7]'. The flag
+'adc_read' is set once all of the channels have been converted.
+
+Module:		iic
+Header File:	iic.h
+Description:	I2C Bus Wrapper routines
+Public Data:
+
+Public Functions:
+void	init_iic	( char addr );		/* Initialise I2C bus	*/
+bit	iic_wait	( void );		/* Timed out wait for Tx*/
+bit	iic_mtx					/* Master Tx; 1: success*/
+			( char addr, 		/* IIC bus dest address	*/
+			  char length, 		/* Transmission length	*/
+			  char idata *out );	/* Output buffer	*/
+
+Usage:
+The high level inter integrated circuit (I2C) bus routines in this module
+provide the programmer with a straight foreward interface to the assembler
+routines in the 'iicdriv' module mentioned below.
+The I2C bus is initialised by calling the 'init_iic(sl_addr)' function,
+where 'sl_addr' is the I2C bus slave address of the target controller.
+The function 'iic_mtx(addr, length, out)' is used to start a transmision
+of 'length' bytes, starting at the byte pointed to by 'out' to the slave
+reciever identified by I2C bus address 'addr'. Output data referenced
+via the pointer 'out' should be in the internal address space (idata).
+This is a blocking call, with the function returning once a succesful 
+transmision has taken place, or after a time-out period if unsuccesful.
+The return value 1 indicates a successful transmission.
+The function 'iic_wait()' can be called after an unsuccesful call to the
+transmision routine, to provide for an aditional time-out period to cater
+for slow peripherals, or long transmit frames. The return value indicates
+weather the transmision has completed within the time-out period.
+
+Module:		iicdriv
+Header File:	iicdriv.h
+Description:	IIC Bus Low Level Routines
+Public Data:
+bit	iic_mready;				/* Master transmit flag	*/
+bit	iic_sready;				/* Slave reception flag	*/
+Public Functions:
+void	iic_mstart	( char addr, char length, char idata *d_ptr );
+void	iic_sset	( char idata *d_ptr, char length );
+void	iic_init	( char own_slave_addr );
+
+Usage:
+The functions in this module are low level assembler routines, including
+the I2C bus interrupt routine. The functions in the module above provide
+a wrapper for the 'iic_init()' function and the 'iic_mstart()' function.
+The latter is a non blocking call, returning immediately with no garantee
+of success. The flag 'iic_mready' can be read to check for completion of
+the transmission.
+
+Module:		nkey
+Header File:	nkey.h
+Description:	uNode Keypad Functions
+
+Public Data:
+bit	x1_flag;				/* External Interupt 1	*/
+
+Public Functions:
+char	ngetkey		( void );		/* uNode getkey routine	*/
+bit	test_x1		( void );		/* Return 1 if key int	*/
+void	init_nkey	( void );		/* Set up keypad	*/
+
+Usage:
+A call should be made to the function 'init_nkey()' to initialise the key-
+pad interrupt. The flag 'x1_flag' is set by the interrupt routine, and can
+be polled to check the keypad buffer status.
+The function 'ngetket()' waits for a keypress, and returns the code of the 
+key pressed. The keypad shares an interrupt with the Real Time Clock (RTC).
+The function 'test_x1()' can be used to confirm that the keypad caused the
+interrupt in cases where the RTC alarm or timer has been enabled.
+
+Module:		nodelcd
+Header File:	nodelcd.h
+Description:	uNode Liquid Crystal Display (LCD) driver routines
+
+Public Data:
+#define	NCLEAR		0x01			/* Clear LCD 		*/
+#define	NLCD_L1		0x80			/* Set LCD to Line 1	*/
+#define	NLCD_L2		0xC0			/* Set LCD to Line 2	*/
+#define	NLCD_CB		0x0F			/* Set LCD Cursor Blink	*/
+bit	nlcd_data;				/* used by nputchar	*/
+
+Public Functions:
+char	nputchar	( char in );		/* uNode LCD putchar	*/
+void	set_nlcd	( char command );	/* Send to command reg.	*/
+void	init_nlcd	( void );		/* Initialise LCD dis	*/
+void	paint_nlcd	( char* l1, char* l2 );	/* Paint 2 lines on LCD	*/
+
+Usage:
+The function 'init_nlcd()' initialises the LCD module, setting a default
+configuration and clearing the screen. The LCD can be further configured
+using the 'set_nlcd()' function. The defines listed under "Public Data"
+can be used as parameters to clear the screen, set the cursor position,
+and set the blink mode.
+The 'nputchar(in)' function prints a single character, represented by the
+parameter 'in', to the LCD screen at the cursor position. This function
+can be called by a 'putchar()' wrapper in your project code in order to
+print via the standard 'printf()' of your compiler's library.
+The 'paint_lcd(l1,l2)' function prints two strings, l1, and l2 to the two
+LCD module lines.
+
+Module:		serial
+Header File:	serial.h
+Description:	uNode Serial Port Driver
+
+Public Data:
+#define	B19200	0xFD				/* Baud rate: 19200	*/
+char	s_tbuf[];				/* Transmit buffer	*/
+char	s_rbuf[];				/* Recieve buffer	*/
+bit	s_rnew;					/* Frame Rx flag	*/
+byte	s_rlen;					/* Rx length		*/
+
+Public Functions:
+char	sputchar	( char in );		/* Print to serial buf	*/
+void	init_serial	( char th1 );		/* Init Serial Port	*/
+void	s_rxh		( void );		/* Serial frame handler	*/
+
+Usage:
+Use the 'init_serial(th1)' function, where th1 is the reload value of the
+baud rate timer, the serial port is set to a default configuration 
+The 'sputchar(in)' function prints a single character, represented by the
+parameter 'in', to the Serial port. This function can be called by a
+'putchar()' wrapper in your project code in order to print via the 
+standard 'printf()' of your compiler's library.
+
+Module:		time
+Header File:	time.h
+Description:	Time related routines
+Public Data:
+typedef struct	{
+	byte h;
+	byte m;
+	byte s;
+	} time;
+typedef struct	{
+	byte d;
+	byte m;
+	} date;
+
+Public Functions:
+bit	show_time	( void );		/* Prints current time	*/
+bit	print_time	( time *out );		/* Prints a time	*/
+bit	show_date	( void );		/* Prints current date	*/
+bit	print_date	( date *out );		/* Prints a date	*/
+void	prompt_time	( void );		/* Print time prompt	*/
+long	dif_time	( time *t1, time *t2 );	/* Time diff in s	*/
+long	tim2lng		( time *in );		/* Time in seconds	*/
+
+Usage:
+show_time() Prints current time
+print_time(out) Prints a time
+show_date() Prints current date
+print_date(out) Prints a date
+prompt_time() Print time prompt, used get user time input.
+dif_time(t1,t2) Time difference in seconds
+tim2lng(in) Time in seconds since midnight.
+
+Module:		rtc
+Header File:	rtc.h
+Description:	IIC Bus PCF8583 Real Time Clock Handler
+Public Data:
+
+Public Functions:
+bit	init_rtc	( void );		/* RTC answering	*/
+bit	get_time	( time *in );		/* Read time		*/
+bit	set_time	( time *in );		/* Set time		*/
+bit	get_date	( date *in );		/* Read date 		*/
+bit	test_alarm	( void );		/* Test for RTC alarm	*/
+Usage:
+
+Module:		wdog
+Header File:	wdog.h
+Description:	Watchdog refresh routine
+Public Data:
+Public Functions:
+void	wdog	( char period );		/* Reset Watchdog timer	*/
+
+Usage:
+wdog	( period );

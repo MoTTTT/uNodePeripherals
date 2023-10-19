@@ -1,0 +1,82 @@
+C51 COMPILER V3.40,  NODELCD                                                               29/04/98  19:04:17  PAGE 1   
+
+
+DOS C51 COMPILER V3.40, COMPILATION OF MODULE NODELCD
+OBJECT MODULE PLACED IN NODELCD.OBJ
+COMPILER INVOKED BY: C:\C51\BIN\C51.EXE NODELCD.C LA
+
+stmt level    source
+
+   1          /*			Copyright Q Solutions				*/
+   2          /*	File:		nodelcd.c					*/
+   3          /*	Programmer:	MoT						*/
+   4          /*	Module:		uNode LCD module routines			*/
+   5          /*									*/
+   6          /*			History						*/
+   7          /* 20:03 19/04/1997  	Cleanup						*/
+   8          /*									*/
+   9          
+  10          #include	<reg552.h>
+  11          #include	<stdio.h>
+  12          
+  13          #define		NLCD	(( char * ) 0x28200L)	/* LCD Address		*/
+  14          #define		STATUS	2			/* LCD Address		*/
+  15          #define		DATA	1			/* LCD data select	*/
+  16          #define		COMMAND	0			/* LCD command select	*/
+  17          #define		BUSY	0x80			/* LCD Busy mask	*/
+  18          
+  19          #define		NCLEAR	0x01			/* LCD control commands	*/
+  20          #define		NLCD_L1	0x80			/* Set LCD to Line 1	*/
+  21          #define		NLCD_L2	0xC0			/* Set LCD to Line 2	*/
+  22          
+  23          bit		nlcd_data;			/* used by nputchar	*/
+  24          
+  25          char	nputchar	( char in )		/* Print a character	*/
+  26          {
+  27   1      	while	( NLCD[STATUS]& BUSY );		/* Wait for busy flag	*/
+  28   1      	if	( nlcd_data )			/* Check contol or data	*/
+  29   1      		NLCD[DATA]= in;			/* Data register	*/
+  30   1      	else	NLCD[COMMAND]= in;		/* Control register	*/
+  31   1      	return	( in );
+  32   1      }
+  33          
+  34          void	set_nlcd	( char command )	/* Send to command reg.	*/
+  35          {
+  36   1      	nlcd_data= 0;				/* Select LCD command	*/
+  37   1      	nputchar ( command ); 			/* Send the command	*/
+  38   1      	nlcd_data= 1;				/* Reset to LCD Data	*/
+  39   1      }
+  40          
+  41          void	init_nlcd	( void )		/* Initialise LCD dis	*/
+  42          {
+  43   1      	nlcd_data=	0;			/* Select LCD command	*/
+  44   1      	nputchar	( 0x38 );		/* SET LCD FOR 8 BIT	*/
+  45   1      	nputchar	( 0x0C );		/* DISP= ON, CURSOR= OFF*/
+  46   1      	nputchar	( 0x06 );		/* AUTO INC, FREEZE	*/
+  47   1      	nputchar	( NCLEAR );		/* CLEAR SCREEN		*/
+  48   1      	nlcd_data=	1;			/* Reset to LCD Data	*/
+  49   1      }
+  50          
+  51          void	paint_nlcd	( char *l1, char *l2 )	/* Draw Screen		*/
+  52          {
+  53   1      	set_nlcd( NLCD_L1 );		/* Goto Line 1			*/
+  54   1      	printf	( l1 );			/* Print first string		*/
+  55   1      	set_nlcd( NLCD_L2 );		/* Goto Line 2			*/
+  56   1      	printf	( l2 );			/* Print second string		*/
+  57   1      }
+
+
+C51 COMPILER V3.40,  NODELCD                                                               29/04/98  19:04:17  PAGE 2   
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     84    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----       6
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =      1    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

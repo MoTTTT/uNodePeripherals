@@ -1,0 +1,138 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# Borland C 4.0 makefile for protected mode 386 USNET
+ENDIAN=LITTLE   		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+FARDEF=				#use this in CFLAGS if segmented 
+
+MMODL=s				#memory model
+
+TRACE=3				#trace level, 0=none, 9=maximum
+
+PTH=m:\public\bc40		#where the compiler is
+PTH2=m:\public\tnt		#pharlap directory
+
+#tool names ===============================================================
+
+LPTH = $(PTH)\lib
+IPTH = $(PTH)\inc
+IPTH2 = $(PTH)\lib\src
+CC = $(PTH)\bin\bcc32
+AS = $(PTH)\bin\tasm32
+LNK = $(PTH2)\bin\386link
+CFLAGS = -c -DTRACE=$(TRACE) -D$(ENDIAN)
+AFLAGS = /ml
+LFLAGS = -exe $* -lib $(LPTH)\cw32
+LIBR = $(PTH2)\bin\386lib
+
+#default rules ===========================================================
+
+.c.obj:				# C to object
+	set PATH=$(PTH)\bin
+	$(CC) $(CFLAGS) $<
+.c.s:				# C to assembler
+	set PATH=$(PTH)\bin
+	$(CC) -Hanno -S $(CFLAGS) $<
+.asm.obj:			# assembler to object
+	set PATH=$(PTH)
+	$(AS) $< $(AFLAGS)
+
+all:	usnet.lib		#default make
+
+usnet.lib:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.obj: ping.c $(INCS) icmp.h
+fttest.obj: fttest.c $(INCS)
+ltest.obj: ltest.c $(INCS)
+bootp.obj: bootp.c $(INCS)
+tftp.obj: tftp.c $(INCS)
+ftp.obj: ftp.c $(INCS)
+support.obj: support.c $(INCS) driver.h
+nprintf.obj: nprintf.c 
+nscanf.obj: nscanf.c 
+route.obj: route.c $(INCS)
+socket.obj: socket.c socket.h $(INCS)
+ip.obj: ip.c $(INCS)
+icmp.obj: icmp.c $(INCS) icmp.h
+arp.obj: arp.c $(INCS)
+rarp.obj: rarp.c $(INCS)
+ethernet.obj: ethernet.c $(INCS) ethernet.h
+slip.obj: slip.c $(INCS) 
+wrap.obj: wrap.c $(INCS)
+udp.obj: udp.c $(INCS)
+tcp.obj: tcp.c $(INCS)
+netconf.obj: netconf.c $(INCS) drvconf.h
+net.obj: net.c $(INCS)
+driver.obj: driver.c $(INCS) driver.h
+wd8003.obj: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.obj: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+ne2100.obj: ne2100.c $(INCS) driver.h ethernet.h am7990.h
+exp16.obj: exp16.c $(INCS) driver.h ethernet.h i82586.h
+en360.obj: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.obj: i8250.c $(INCS) driver.h 
+d2681.obj: d2681.c $(INCS) driver.h
+hcsci11.obj: hcsci11.c $(INCS) driver.h
+hcsci16.obj: hcsci16.c $(INCS) driver.h
+h64180.obj: h64180.c $(INCS) driver.h
+putchr.obj: putchr.asm
+suppa.obj: suppa.asm
+clock.obj: clock.asm
+start.obj: start.asm
+
+#building of libraries =====================================================
+
+usnet.lib: netconf.obj net.obj route.obj ftp.obj tftp.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj wd8003.obj ne2000.obj ne2100.obj exp16.obj slip.obj i8250.obj d2681.obj wrap.obj support.obj driver.obj suppa.obj nprintf.obj nscanf.obj socket.obj putchr.obj clock.obj
+	set PATH=$(PTH)\bin;$(PTH2)\bin
+	$(LIBR) usnet -c netconf.obj net.obj route.obj ftp.obj tftp.obj tcp.obj 
+	$(LIBR) usnet -a udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj 
+	$(LIBR) usnet -a wd8003.obj ne2000.obj ne2100.obj exp16.obj slip.obj
+	$(LIBR) usnet -a i8250.obj d2681.obj 
+	$(LIBR) usnet -a wrap.obj nprintf.obj socket.obj nscanf.obj support.obj 
+	$(LIBR) usnet -a driver.obj suppa.obj putchr.obj clock.obj
+
+#building the programs =====================================================
+
+ping:	start.obj ping.obj usnet.lib
+	$(LNK) start $* -lib usnet.lib $(LFLAGS)
+
+emtest: start.obj emtest.obj usnet.lib
+	$(LNK) start $* -lib usnet.lib $(LFLAGS)
+
+fttest:	start.obj fttest.obj usnet.lib
+	$(LNK) start $* -lib usnet.lib $(LFLAGS)
+
+sotest:	start.obj sotest.obj usnet.lib
+	$(LNK) start $* -lib usnet.lib $(LFLAGS)
+
+ltest:	start.obj ltest.obj route.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj slip.obj wrap.obj nprintf.obj nscanf.obj putchr.obj clock.obj
+	$(CC) $(CFLAGS) -DWRAPTEST net.c
+	$(CC) $(CFLAGS) -DWRAPTEST support.c
+	echo start ltest net route tcp udp ip icmp arp rarp ethernet >tmp.lnk
+	echo slip wrap nprintf nscanf support putchr clock >>tmp.lnk
+	echo $(LFLAGS) >>tmp.lnk
+	-$(LNK) @tmp.lnk
+	erase net.obj
+	erase support.obj
+
+#utility functions  =======================================================
+
+init:
+	map s15:=$(PTH2)\bin
+
+clean:
+	erase *.lst
+	erase *.obj
+	erase *.map
+	erase usnet.lib
+	erase fttest.ex?
+	erase ltest.ex?
+	erase ping.ex?
+

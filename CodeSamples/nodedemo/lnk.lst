@@ -1,0 +1,212 @@
+BL51 BANKED LINKER/LOCATER V2.10                                                          04/17/97  20:46:26  PAGE 1
+
+
+MS-DOS BL51 BANKED LINKER/LOCATER V2.10, INVOKED BY:
+C:\C51\BIN\BL51.EXE DEMO.OBJ TO DEMO.ABS RAMSIZE (256) PRINT (LNK.LST)
+
+
+MEMORY MODEL: SMALL
+
+
+INPUT MODULES INCLUDED:
+  DEMO.OBJ (DEMO)
+  C:\C51\LIB\C51S.LIB (?C_STARTUP)
+  C:\C51\LIB\C51S.LIB (?C_CLDPTR)
+  C:\C51\LIB\C51S.LIB (?C_CSTPTR)
+  C:\C51\LIB\C51S.LIB (?C_CCASE)
+  C:\C51\LIB\C51S.LIB (PRINTF)
+  C:\C51\LIB\C51S.LIB (PUTCHAR)
+  C:\C51\LIB\C51S.LIB (?C_INIT)
+  C:\C51\LIB\C51S.LIB (?C_CLDOPTR)
+  C:\C51\LIB\C51S.LIB (?C_PLDIIDATA)
+
+
+LINK MAP OF MODULE:  DEMO.ABS (DEMO)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+            REG     0008H     0008H     ABSOLUTE     "REG BANK 1"
+            REG     0010H     0008H     ABSOLUTE     "REG BANK 2"
+            DATA    0018H     0001H     UNIT         ?DT?DEMO
+                    0019H     0007H                  *** GAP ***
+            BIT     0020H.0   0001H.1   UNIT         "BIT_GROUP"
+                    0021H.1   0000H.7                *** GAP ***
+            DATA    0022H     0014H     UNIT         "DATA_GROUP"
+            IDATA   0036H     0030H     UNIT         ?ID?DEMO
+            IDATA   0066H     0001H     UNIT         ?STACK
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0003H     ABSOLUTE     
+            CODE    0003H     000AH     INBLOCK      ?PR?_SET_LCD?DEMO
+                    000DH     0006H                  *** GAP ***
+            CODE    0013H     0003H     ABSOLUTE     
+                    0016H     0005H                  *** GAP ***
+            CODE    001BH     0003H     ABSOLUTE     
+            CODE    001EH     0007H     INBLOCK      ?PR?W_DOG?DEMO
+                    0025H     0006H                  *** GAP ***
+            CODE    002BH     0003H     ABSOLUTE     
+            CODE    002EH     010CH     INBLOCK      ?PR?SIO1_INT?DEMO
+            CODE    013AH     0022H     INBLOCK      ?PR?_START_SIO1?DEMO
+            CODE    015CH     0021H     INBLOCK      ?PR?INIT_IIC?DEMO
+            CODE    017DH     0035H     INBLOCK      ?PR?INIT?DEMO
+            CODE    01B2H     000CH     INBLOCK      ?PR?X1_INT?DEMO
+            CODE    01BEH     0011H     INBLOCK      ?PR?GETKEY?DEMO
+            CODE    01CFH     0045H     INBLOCK      ?PR?_RANGE_GETKEY?DEMO
+            CODE    0214H     00CDH     INBLOCK      ?PR?GET_TIME?DEMO
+            CODE    02E1H     0052H     INBLOCK      ?PR?SHOW_TIME?DEMO
+            CODE    0333H     0021H     INBLOCK      ?PR?TEST_X1?DEMO
+BL51 BANKED LINKER/LOCATER V2.10                                                        04/17/97  20:46:26  PAGE 2
+
+
+            CODE    0354H     0011H     INBLOCK      ?PR?_SERVICE_PAD?DEMO
+            CODE    0365H     0018H     INBLOCK      ?PR?SET_DATE?DEMO
+            CODE    037DH     002FH     INBLOCK      ?PR?MAIN?DEMO
+            CODE    03ACH     0047H     UNIT         ?CO?DEMO
+            CODE    03F3H     0007H     UNIT         ?C_INITSEG
+            CODE    03FAH     008CH     UNIT         ?C_C51STARTUP
+            CODE    0486H     0094H     UNIT         ?C_LIB_CODE
+            CODE    051AH     032BH     UNIT         ?PR?PRINTF?PRINTF
+            CODE    0845H     005BH     UNIT         PUT_C
+
+
+
+OVERLAY MAP OF MODULE:   DEMO.ABS (DEMO)
+
+
+SEGMENT                           BIT-GROUP          DATA-GROUP 
+  +--> CALLED SEGMENT          START    LENGTH     START    LENGTH
+------------------------------------------------------------------
+?PR?SIO1_INT?DEMO              -----    -----      -----    -----
+  +--> ?C_LIB_CODE
+
+?C_C51STARTUP                  -----    -----      -----    -----
+  +--> ?PR?MAIN?DEMO
+  +--> ?C_INITSEG
+
+?PR?MAIN?DEMO                  -----    -----      -----    -----
+  +--> ?PR?INIT?DEMO
+  +--> ?PR?INIT_IIC?DEMO
+  +--> ?PR?_SET_LCD?DEMO
+  +--> ?CO?DEMO
+  +--> ?PR?PRINTF?PRINTF
+  +--> ?PR?SHOW_TIME?DEMO
+  +--> ?PR?TEST_X1?DEMO
+  +--> ?PR?_SERVICE_PAD?DEMO
+
+?PR?INIT_IIC?DEMO              -----    -----      -----    -----
+  +--> ?PR?_START_SIO1?DEMO
+
+?PR?PRINTF?PRINTF              0020H.0  0001H.1    0022H    0014H
+  +--> ?C_LIB_CODE
+
+?PR?SHOW_TIME?DEMO             -----    -----      -----    -----
+  +--> ?PR?_START_SIO1?DEMO
+  +--> ?PR?_SET_LCD?DEMO
+  +--> ?CO?DEMO
+  +--> ?PR?PRINTF?PRINTF
+
+?PR?TEST_X1?DEMO               -----    -----      -----    -----
+  +--> ?PR?_START_SIO1?DEMO
+
+?PR?_SERVICE_PAD?DEMO          -----    -----      -----    -----
+  +--> ?PR?GET_TIME?DEMO
+
+?PR?GET_TIME?DEMO              -----    -----      -----    -----
+  +--> ?PR?_SET_LCD?DEMO
+  +--> ?CO?DEMO
+  +--> ?PR?PRINTF?PRINTF
+BL51 BANKED LINKER/LOCATER V2.10                                                        04/17/97  20:46:26  PAGE 3
+
+
+  +--> ?PR?GETKEY?DEMO
+  +--> ?PR?_RANGE_GETKEY?DEMO
+  +--> ?PR?_START_SIO1?DEMO
+
+
+
+UNRESOLVED EXTERNAL SYMBOLS:
+   LCD_ADDR
+   OUT_FLAG
+   PAR_ADDR
+
+
+
+SYMBOL TABLE OF MODULE:  DEMO.ABS (DEMO)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        ?C_CLDPTR
+  C:0486H         PUBLIC        ?C_CLDPTR
+  -------         ENDMOD        ?C_CLDPTR
+
+  -------         MODULE        ?C_CSTPTR
+  C:04A1H         PUBLIC        ?C_CSTPTR
+  -------         ENDMOD        ?C_CSTPTR
+
+  -------         MODULE        ?C_CCASE
+  C:04B5H         PUBLIC        ?C_CCASE
+  -------         ENDMOD        ?C_CCASE
+
+  -------         MODULE        PRINTF
+  D:0022H         PUBLIC        ?_PRINTF517?BYTE
+  D:0022H         PUBLIC        ?_SPRINTF517?BYTE
+  D:0022H         PUBLIC        ?_PRINTF?BYTE
+  D:0022H         PUBLIC        ?_SPRINTF?BYTE
+  C:057FH         PUBLIC        _PRINTF
+  C:0579H         PUBLIC        _SPRINTF
+  C:057FH         PUBLIC        _PRINTF517
+  C:0579H         PUBLIC        _SPRINTF517
+  -------         ENDMOD        PRINTF
+
+  -------         MODULE        ?C_CLDOPTR
+  C:04DBH         PUBLIC        ?C_CLDOPTR
+  -------         ENDMOD        ?C_CLDOPTR
+
+  -------         MODULE        ?C_PLDIIDATA
+  C:050AH         PUBLIC        ?C_PLDIIDATA
+  -------         ENDMOD        ?C_PLDIIDATA
+
+*** WARNING 16: UNCALLED SEGMENT, IGNORED FOR OVERLAY PROCESS
+    SEGMENT: ?PR?SET_DATE?DEMO
+
+*** WARNING 1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  LCD_ADDR
+    MODULE:  C:\C51\LIB\C51S.LIB (PUTCHAR)
+
+*** WARNING 1: UNRESOLVED EXTERNAL SYMBOL
+BL51 BANKED LINKER/LOCATER V2.10                                                        04/17/97  20:46:26  PAGE 4
+
+
+    SYMBOL:  PAR_ADDR
+    MODULE:  C:\C51\LIB\C51S.LIB (PUTCHAR)
+
+*** WARNING 1: UNRESOLVED EXTERNAL SYMBOL
+    SYMBOL:  OUT_FLAG
+    MODULE:  C:\C51\LIB\C51S.LIB (PUTCHAR)
+
+*** WARNING 2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  PAR_ADDR
+    MODULE:  C:\C51\LIB\C51S.LIB (PUTCHAR)
+    ADDRESS: 0860H
+
+*** WARNING 2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  OUT_FLAG
+    MODULE:  C:\C51\LIB\C51S.LIB (PUTCHAR)
+    ADDRESS: 0877H
+
+*** WARNING 2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  OUT_FLAG
+    MODULE:  C:\C51\LIB\C51S.LIB (PUTCHAR)
+    ADDRESS: 087AH
+
+*** WARNING 2: REFERENCE MADE TO UNRESOLVED EXTERNAL
+    SYMBOL:  LCD_ADDR
+    MODULE:  C:\C51\LIB\C51S.LIB (PUTCHAR)
+    ADDRESS: 087EH
+
+LINK/LOCATE RUN COMPLETE.  8 WARNING(S),  0 ERROR(S)

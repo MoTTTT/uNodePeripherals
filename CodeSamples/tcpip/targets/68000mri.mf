@@ -1,0 +1,176 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# Microtec makefile for 68000 USNET
+ENDIAN=BIG		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+TRACE=3			#trace level, 0=none, 9=maximum
+
+BASE=0x403000		#load base: 10000 for the Cogent 68030 board
+			#	    403000 for the Motorola 68360 board
+
+DSPLY=1			#display device: 1 uses Motorola monitor function
+			#		 2 2681 in the Cogent 68030 board
+
+TIMER=3			#timer: 1 uses Motorola monitor function
+			#	2 PIP in the Cogent 68030 board
+			#	3 CPM in the 68360
+
+PTH=m:\public\mri	#where the compiler is
+
+#tool names =================================================================
+
+AFLAGS = -f p=cpu32
+CFLAGS = -c -pcpu32 -DTRACE=$(TRACE) -D$(ENDIAN) -DDSPLY=$(DSPLY) -DTIMER=$(TIMER)
+LFLAGS = -X -f tmp.spc
+CPTH = $(PTH)\mcc68k
+CC = $(CPTH)\mcc68k
+AS = $(PTH)\asm68k\asm68k
+LL = $(PTH)\asm68k\lnk68k
+LIBR = $(PTH)\asm68k\lib68k
+
+#default rules ===========================================================
+.SUFFIXES:
+.SUFFIXES: .map .dwn .obj .s .c
+
+.c.obj:				# C to object
+	set MRI_68K_INC=$(CPTH)
+	$(CC) $(CFLAGS) $<
+.c.src: 			# C to listing
+	set MRI_68K_INC=$(CPTH)
+	$(CC) $(CFLAGS) -Fsm -S $<
+.s.obj:				# assembly to object
+	$(AS) $(AFLAGS) $<
+
+usnet.lib:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.obj: ping.c $(INCS) icmp.h
+fttest.obj: fttest.c $(INCS)
+ltest.obj: ltest.c $(INCS)
+bootp.obj: bootp.c $(INCS)
+tftp.obj: tftp.c $(INCS)
+ftp.obj: ftp.c $(INCS)
+support.obj: support.c $(INCS) driver.h
+nprintf.obj: nprintf.c 
+nscanf.obj: nscanf.c 
+route.obj: route.c $(INCS)
+socket.obj: socket.c socket.h $(INCS)
+ip.obj: ip.c $(INCS)
+icmp.obj: icmp.c $(INCS) icmp.h
+arp.obj: arp.c $(INCS)
+rarp.obj: rarp.c $(INCS)
+ethernet.obj: ethernet.c $(INCS) ethernet.h
+slip.obj: slip.c $(INCS) 
+wrap.obj: wrap.c $(INCS)
+udp.obj: udp.c $(INCS)
+tcp.obj: tcp.c $(INCS)
+netconf.obj: netconf.c $(INCS) drvconf.h
+net.obj: net.c $(INCS)
+driver.obj: driver.c $(INCS) driver.h
+wd8003.obj: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.obj: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.obj: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.obj: i8250.c $(INCS) driver.h 
+d2681.obj: d2681.c $(INCS) driver.h
+hcsci11.obj: hcsci11.c $(INCS) driver.h
+hcsci16.obj: hcsci16.c $(INCS) driver.h
+h64180.obj: h64180.c $(INCS) driver.h
+suppa.obj: suppa.s
+
+#building the libraries =====================================================
+
+usnet.lib:	 netconf.obj net.obj socket.obj route.obj ftp.obj tftp.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj slip.obj en360.obj d2681.obj wrap.obj support.obj driver.obj nprintf.obj nscanf.obj suppa.obj putchr.obj clock.obj
+	-erase usnet.lib
+	echo create usnet.lib >tmp.par
+	echo addmod netconf.obj,net.obj,socket.obj,route.obj,ftp.obj >>tmp.par
+	echo addmod tftp.obj,tcp.obj,udp.obj,ip.obj,icmp.obj,arp.obj >>tmp.par
+	echo addmod rarp.obj,ethernet.obj,slip.obj,en360.obj,d2681.obj >>tmp.par
+	echo addmod wrap.obj,nprintf.obj,nscanf.obj,support.obj >>tmp.par
+	echo addmod driver.obj,suppa.obj,putchr.obj,clock.obj >>tmp.par
+	echo save >>tmp.par
+	echo end >>tmp.par
+	$(LIBR) <tmp.par
+
+#building the programs =====================================================
+
+ping:	start.obj ping.obj usnet.lib
+	echo name $* >tmp.lnk
+	echo listmap publics >>tmp.lnk
+	echo format S >>tmp.lnk
+	echo base $(BASE) >>tmp.lnk
+	echo order code,literals,strings,const >>tmp.lnk
+	echo order ??INITDATA >>tmp.lnk
+	echo order vars,zerovars,tags,ioports >>tmp.lnk
+	echo load start.obj $*.obj >>tmp.lnk
+	echo load usnet.lib $(CPTH)\68020\mcc68kab.lib >>tmp.lnk
+	echo end >>tmp.lnk
+	$(LL) -c tmp.lnk -m >$*.map
+	copy tmp.abs $*.dwn
+
+bench:	start.obj bench.obj usnet.lib
+	echo name $* >tmp.lnk
+	echo listmap publics >>tmp.lnk
+	echo format S >>tmp.lnk
+	echo base $(BASE) >>tmp.lnk
+	echo order code,literals,strings,const >>tmp.lnk
+	echo order ??INITDATA >>tmp.lnk
+	echo order vars,zerovars,tags,ioports >>tmp.lnk
+	echo load start.obj $*.obj >>tmp.lnk
+	echo load usnet.lib $(CPTH)\68020\mcc68kab.lib >>tmp.lnk
+	echo end >>tmp.lnk
+	$(LL) -c tmp.lnk -m >$*.map
+	copy tmp.abs $*.dwn
+
+emtest:	start.obj emtest.obj usnet.lib
+	echo name $* >tmp.lnk
+	echo listmap publics >>tmp.lnk
+	echo format S >>tmp.lnk
+	echo base $(BASE) >>tmp.lnk
+	echo order code,literals,strings,const >>tmp.lnk
+	echo order ??INITDATA >>tmp.lnk
+	echo order vars,zerovars,tags,ioports >>tmp.lnk
+	echo load start.obj $*.obj >>tmp.lnk
+	echo load usnet.lib $(CPTH)\68020\mcc68kab.lib >>tmp.lnk
+	echo end >>tmp.lnk
+	$(LL) -c tmp.lnk -m >$*.map
+	copy tmp.abs $*.dwn
+
+ltest:	start.obj ltest.obj route.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj slip.obj wrap.obj nprintf.obj nscanf.obj putchr.obj suppa.obj 
+	echo name ltest >tmp.lnk
+	echo listmap publics >>tmp.lnk
+	echo format S >>tmp.lnk
+	echo base $(BASE) >>tmp.lnk
+	echo order code,literals,strings,const >>tmp.lnk
+	echo order ??INITDATA >>tmp.lnk
+	echo order vars,zerovars,tags,ioports >>tmp.lnk
+	echo load start.obj >>tmp.lnk
+	echo load ltest.obj net.obj route.obj tcp.obj udp.obj ip.obj >>tmp.lnk
+	echo load icmp.obj arp.obj rarp.obj ethernet.obj slip.obj wrap.obj >>tmp.lnk
+	echo load nprintf.obj nscanf.obj support.obj putchr.obj suppa.obj >>tmp.lnk
+	echo load $(CPTH)\68020\mcc68kab.lib >>tmp.lnk
+	echo end >>tmp.lnk
+	set MRI_68K_INC=$(CPTH)
+	$(CC) $(CFLAGS) -DWRAPTEST net.c
+	$(CC) $(CFLAGS) -DWRAPTEST support.c
+	$(LL) -c tmp.lnk -m >$*.map
+	copy tmp.abs ltest.dwn
+	erase net.obj
+	erase support.obj
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.dwn
+	erase *.obj
+	erase *.map
+	erase tmp.*
+	erase usnet.lib
+

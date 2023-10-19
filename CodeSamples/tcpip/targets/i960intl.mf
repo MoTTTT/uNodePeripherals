@@ -1,0 +1,156 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# Intel IC960 makefile for Intel 960 USNET
+ENDIAN=LITTLE		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+TRACE=3				#trace level, 0=none, 9=maximum
+
+BASE=0x1000			#load base: 0x1000 for Tomcat
+				#           0x8000000 for QT
+
+BOARD=2				#test board: 1 = QT
+				#            2 = Tomcat
+            
+PNAM=CA				#processor type: KA, KB, CA, CB, SA
+
+PTH=o:\public\intel\ic960	#where the compiler is
+
+#tool names =================================================================
+
+CC = $(PTH)\bin\ic960
+CFLAGS = -c -A$(PNAM) -DTRACE=$(TRACE) -D$(ENDIAN) -DBOARD=$(BOARD) 
+AS = $(PTH)\bin\asm960
+LNK = $(PTH)\bin\lnk960
+LNAME = libsdm$(PNAM).a
+AFLAGS = -A$(PNAM)
+LFLAGS = -o $*.dwn -A$(PNAM) -Ttmp
+LIBR = $(PTH)\bin\arc960
+
+#default rules ===========================================================
+.SUFFIXES : .c .s .o
+.SUFFIXES : .dwn .sym
+.c.o:				# C to object
+	set PATH=$(PTH)\bin
+	set I960BASE=$(PTH)
+	set tmpdir=c:\tmp
+	$(CC) $(CFLAGS) $<
+.c.s:				# C to assembly
+	set I960BASE=$(PTH)
+	$(CC) -zso -Z $*.lst $(CFLAGS) $<
+.s.o:				# assembly to object
+	$(AS) $(AFLAGS) $*.s
+.dwn.sym:			# symbol map
+	$(PTH)\bin\nam960 -v -T -x $< >$*.sym
+
+usnet.lib:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.o: ping.c $(INCS) icmp.h
+fttest.o: fttest.c $(INCS)
+ltest.o: ltest.c $(INCS)
+bootp.o: bootp.c $(INCS)
+tftp.o: tftp.c $(INCS)
+ftp.o: ftp.c $(INCS)
+support.o: support.c $(INCS) driver.h
+nprintf.o: nprintf.c 
+nscanf.o: nscanf.c 
+route.o: route.c $(INCS)
+socket.o: socket.c socket.h $(INCS)
+ip.o: ip.c $(INCS)
+icmp.o: icmp.c $(INCS) icmp.h
+arp.o: arp.c $(INCS)
+rarp.o: rarp.c $(INCS)
+ethernet.o: ethernet.c $(INCS) ethernet.h
+slip.o: slip.c $(INCS) 
+wrap.o: wrap.c $(INCS)
+udp.o: udp.c $(INCS)
+tcp.o: tcp.c $(INCS)
+netconf.o: netconf.c $(INCS) drvconf.h
+net.o: net.c $(INCS)
+driver.o: driver.c $(INCS) driver.h
+wd8003.o: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.o: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.o: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.o: i8250.c $(INCS) driver.h 
+d2681.o: d2681.c $(INCS) driver.h
+hcsci11.o: hcsci11.c $(INCS) driver.h
+hcsci16.o: hcsci16.c $(INCS) driver.h
+h64180.o: h64180.c $(INCS) driver.h
+suppa.o: suppa.s
+
+#creation of linker configuration file ====================================
+
+!if $(BOARD) == 1
+ROMPAR = o=0x0,l=0x20000
+RAMPAR = o=0x8000000,l=0x1bffc
+!else
+ROMPAR = o=0x10000000,l=0x10000000
+RAMPAR = o=0x1000,l=0x18000
+!endif
+tmp.ld:
+	rem <<tmp.ld
+MEMORY
+{
+        rom: $(ROMPAR)
+        ram: $(RAMPAR)
+}
+SECTIONS
+{
+	.text :
+        {
+        } >ram
+	.data :
+	{
+	} >ram
+	.bss : 
+	{
+	_bss_start=.;
+	} >ram
+}
+STARTUP (start.o)
+HLL ()
+SYSLIB ($(LNAME))
+<<KEEP
+
+#building the libraries =====================================================
+
+usnet.lib:	 netconf.o net.o socket.o route.o ftp.o tftp.o tcp.o udp.o ip.o icmp.o arp.o rarp.o ethernet.o slip.o i8250.o d2681.o wrap.o support.o driver.o suppa.o nprintf.o nscanf.o clock.o start.o putchr.o atoi.o
+	-erase usnet.lib
+	$(LIBR) r usnet.lib netconf.o net.o socket.o route.o ftp.o
+	$(LIBR) r usnet.lib tftp.o tcp.o udp.o ip.o icmp.o arp.o rarp.o
+	$(LIBR) r usnet.lib ethernet.o slip.o i8250.o d2681.o
+	$(LIBR) r usnet.lib wrap.o nprintf.o nscanf.o support.o 
+	$(LIBR) r usnet.lib driver.o suppa.o clock.o start.o putchr.o atoi.o
+
+#building the programs =====================================================
+
+emtest:	tmp.ld emtest.o usnet.lib
+	set I960BASE=$(PTH)
+	set I960LIB=$(PTH)\lib
+	$(LNK) $(LFLAGS) $*.o usnet.lib
+
+ltest:	 tmp.ld ltest.o usnet.lib
+	set I960BASE=$(PTH)
+	$(CC) $(CFLAGS) -DWRAPTEST net.c
+	$(CC) $(CFLAGS) -DWRAPTEST support.c
+	set I960LIB=$(PTH)\lib
+	$(LNK) $(LFLAGS) $*.o net.o support.o usnet.lib
+	erase net.o
+	erase support.o
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.dwn
+	erase *.o
+	erase *.map
+	erase tmp.*
+	erase usnet.lib

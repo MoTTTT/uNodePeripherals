@@ -1,0 +1,172 @@
+C51 COMPILER V3.40,  INC                                                                   05/04/97  20:04:12  PAGE 1   
+
+
+DOS C51 COMPILER V3.40, COMPILATION OF MODULE INC
+OBJECT MODULE PLACED IN INC.OBJ
+COMPILER INVOKED BY: C:\C51\BIN\C51.EXE INC.C
+
+stmt level    source
+
+   1          /************************************************************************/
+   2          /*		INC.C : 552 include file				*/
+   3          /*		M.J.Colley '92						*/
+   4          /************************************************************************/
+   5          #pragma		ROM (COMPACT)
+   6          #pragma		SMALL
+   7          #pragma		CODE
+   8          #pragma		SYMBOLS
+   9          #pragma		PAGELENGTH(64)
+  10          #include	<stdio.h>
+  11          #include	<intrins.h>
+  12          #include	<reg552.h>
+  13          
+  14          #include	<sio1.h>
+  15          #include	<n3inc.h>
+  16          
+  17          	set_date	( )
+  18          {
+  19   1      char	idata	date[3];
+  20   1      	date[0]=0x05;
+  21   1      	date[1]=0x23;
+  22   1      	date[2]=0x69;
+  23   1      	start_sio1	( RTC_W, 3, date );
+  24   1      }
+C51 COMPILER V3.40,  INC                                                                   05/04/97  20:04:12  PAGE 2   
+
+ASSEMBLY LISTING OF GENERATED OBJECT CODE
+
+
+             ; FUNCTION set_date (BEGIN)
+                                           ; SOURCE LINE # 17
+                                           ; SOURCE LINE # 18
+                                           ; SOURCE LINE # 20
+0000 7800    R     MOV     R0,#date
+0002 7605          MOV     @R0,#05H
+                                           ; SOURCE LINE # 21
+0004 08            INC     R0
+0005 7623          MOV     @R0,#023H
+                                           ; SOURCE LINE # 22
+0007 08            INC     R0
+0008 7669          MOV     @R0,#069H
+                                           ; SOURCE LINE # 23
+000A 7FA0          MOV     R7,#0A0H
+000C 7D03          MOV     R5,#03H
+000E 7B00    R     MOV     R3,#LOW date
+0010 120000  E     LCALL   _start_sio1
+                                           ; SOURCE LINE # 24
+0013 22            RET     
+             ; FUNCTION set_date (END)
+
+C51 COMPILER V3.40,  INC                                                                   05/04/97  20:04:12  PAGE 3   
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+AA . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00DAH  1
+T0 . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B4H  1
+AC . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D6H  1
+T1 . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B5H  1
+ECM0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ECH  1
+EA . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00AFH  1
+ECM1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00EDH  1
+ECM2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00EEH  1
+CMI0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CCH  1
+CMI1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CDH  1
+CMI2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CEH  1
+T20V . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CFH  1
+ECT0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00E8H  1
+ECT1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00E9H  1
+ECT2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00EAH  1
+ECT3 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00EBH  1
+CTI0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C8H  1
+PCM0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FCH  1
+CTI1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00C9H  1
+PCM1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FDH  1
+CTI2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CAH  1
+PCM2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FEH  1
+CTI3 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00CBH  1
+RD . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B7H  1
+ENS1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00DEH  1
+PCT0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00F8H  1
+PCT1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00F9H  1
+PCT2 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FAH  1
+RI . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0098H  1
+PCT3 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FBH  1
+SI . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00DBH  1
+INT0 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B2H  1
+CY . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D7H  1
+TI . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0099H  1
+INT1 . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B3H  1
+date . . . . . . . . . . . . . . . . .  TYPEDEF  -----  STRUCT   -----  2
+  day. . . . . . . . . . . . . . . . .  MEMBER   -----  CHAR     0000H  1
+  month. . . . . . . . . . . . . . . .  MEMBER   -----  CHAR     0001H  1
+OV . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D2H  1
+WR . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B6H  1
+time . . . . . . . . . . . . . . . . .  TYPEDEF  -----  STRUCT   -----  3
+  second . . . . . . . . . . . . . . .  MEMBER   -----  CHAR     0000H  1
+  minute . . . . . . . . . . . . . . .  MEMBER   -----  CHAR     0001H  1
+  hour . . . . . . . . . . . . . . . .  MEMBER   -----  CHAR     0002H  1
+IE0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0089H  1
+IE1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008BH  1
+CR0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D8H  1
+CR1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D9H  1
+ES0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ACH  1
+ET0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A9H  1
+ES1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ADH  1
+ET1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00ABH  1
+EAD. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00AEH  1
+TF0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008DH  1
+ET2. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00EFH  1
+TF1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008FH  1
+RB8. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009AH  1
+C51 COMPILER V3.40,  INC                                                                   05/04/97  20:04:12  PAGE 4   
+
+NAME                                    CLASS   MSPACE  TYPE    OFFSET  SIZE
+====                                    =====   ======  ====    ======  ====
+
+
+EX0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00A8H  1
+IT0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      0088H  1
+set_date . . . . . . . . . . . . . . .  PUBLIC   CODE   PROC     -----  -----
+  date . . . . . . . . . . . . . . . .  STATIC   IDATA  ARRAY    0000H  3
+TB8. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009BH  1
+EX1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00AAH  1
+IT1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008AH  1
+P. . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D0H  1
+SM0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009FH  1
+SM1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009EH  1
+SM2. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009DH  1
+PS0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BCH  1
+PT0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B9H  1
+PS1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BDH  1
+PT1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BBH  1
+PAD. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BEH  1
+RS0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D3H  1
+PT2. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00FFH  1
+TR0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008CH  1
+RS1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D4H  1
+TR1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      008EH  1
+PX0. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B8H  1
+PX1. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00BAH  1
+REN. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      009CH  1
+STA. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00DDH  1
+RXD. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B0H  1
+_start_sio1. . . . . . . . . . . . . .  EXTERN   CODE   PROC     -----  -----
+TXD. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00B1H  1
+F0 . . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00D5H  1
+STO. . . . . . . . . . . . . . . . . .  ABSBIT   -----  BIT      00DCH  1
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     20    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =      3    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,2 @@
+552.obj,sio552.obj to 552.abs ramsize(256)&
+NOOVERLAY PRINT (lnk.lst) XDATA(4200H)

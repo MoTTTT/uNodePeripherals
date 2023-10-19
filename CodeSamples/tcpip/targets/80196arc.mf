@@ -1,0 +1,139 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# * MAKEFILE.  Edition: 3  Last changed: 2-Nov-93,9:26:54  By: HARRY *
+#  +++=>>> '%l'
+# Currently extracted for edit by: '***_NOBODY_***'
+#
+# Archimedes makefile for Intel 8096 USNET
+ENDIAN=LITTLE	   		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+TRACE=3				#trace level, 0=none, 9=maximum
+
+PTH = m:\public\archimds\8096	#Directory where compiler is kept
+
+#tool names =================================================================
+
+CC = $(PTH)\c-96
+AS = $(PTH)\a8096
+LNK = $(PTH)\xlink
+INI = startup.r15
+LIB = $(PTH)\cl8096.r15
+CFLAGS = -D$(ENDIAN) -DTRACE=$(TRACE)
+AFLAGS = 
+LFLAGS = -c8096 -o $*.hex -l $*.map -x
+LIBR = $(PTH)\xlib
+
+#default rules ===========================================================
+.SUFFIXES: .r15 .c .s
+
+.s.r15:				# assembly to object
+	$(AS) $< $(AFLAGS)
+.c.r15:					# C to object
+	set C_INCLUDE=$(PTH)\ 
+	$(CC) $< $(CFLAGS)
+.c.lst:					# C to assembly
+	set C_INCLUDE=$(PTH)\ 
+	$(CC) -L -q $< $(CFLAGS)
+
+usnet.lib:				#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.r15: ping.c $(INCS) icmp.h
+fttest.r15: fttest.c $(INCS)
+ltest.r15: ltest.c $(INCS)
+bootp.r15: bootp.c $(INCS)
+tftp.r15: tftp.c $(INCS)
+ftp.r15: ftp.c $(INCS)
+support.r15: support.c $(INCS) driver.h
+nprintf.r15: nprintf.c 
+nscanf.r15: nscanf.c 
+route.r15: route.c $(INCS)
+socket.r15: socket.c socket.h $(INCS)
+ip.r15: ip.c $(INCS)
+icmp.r15: icmp.c $(INCS) icmp.h
+arp.r15: arp.c $(INCS)
+ethernet.r15: ethernet.c $(INCS) ethernet.h
+slip.r15: slip.c $(INCS) 
+wrap.r15: wrap.c $(INCS)
+udp.r15: udp.c $(INCS)
+tcp.r15: tcp.c $(INCS)
+netconf.r15: netconf.c $(INCS) drvconf.h
+net.r15: net.c $(INCS)
+driver.r15: driver.c $(INCS) driver.h
+wd8003.r15: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.r15: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.r15: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.r15: i8250.c $(INCS) driver.h 
+d2681.r15: d2681.c $(INCS) driver.h
+hcsci11.r15: hcsci11.c $(INCS) driver.h
+hcsci16.r15: hcsci16.c $(INCS) driver.h
+h64180.r15: h64180.c $(INCS) driver.h
+suppa.r15: suppa.s def96.s
+putchr.r15: putchr.s def96.s
+
+#building the libraries =====================================================
+
+usnet.lib:	 netconf.r15 net.r15 route.r15 tcp.r15 udp.r15 ip.r15 icmp.r15 slip.r15 d2681.r15 wrap.r15 support.r15 driver.r15 nprintf.r15 nscanf.r15 suppa.r15 
+	erase usnet.lib
+	echo DEFINE-CPU 68HC11 >tmp.par
+	echo F-M netconf.r15 usnet.lib >>tmp.par
+	echo F-M net.r15 usnet.lib >>tmp.par
+	echo F-M route.r15 usnet.lib >>tmp.par
+	echo F-M tcp.r15 usnet.lib >>tmp.par
+	echo F-M udp.r15 usnet.lib >>tmp.par
+	echo F-M ip.r15 usnet.lib >>tmp.par
+	echo F-M icmp.r15 usnet.lib >>tmp.par
+	echo F-M slip.r15 usnet.lib >>tmp.par
+	echo F-M d2681.r15 usnet.lib >>tmp.par
+	echo F-M wrap.r15 usnet.lib >>tmp.par
+	echo F-M nprintf.r15 usnet.lib >>tmp.par
+	echo F-M nscanf.r15 usnet.lib >>tmp.par
+	echo F-M support.r15 usnet.lib >>tmp.par
+	echo F-M driver.r15 usnet.lib >>tmp.par
+	echo F-M suppa.r15 usnet.lib >>tmp.par
+	echo F-M putchr.r15 usnet.lib >>tmp.par
+	echo EXIT >>tmp.par
+	$(LIBR) tmp.par
+
+#building the programs =====================================================
+#load using ecm96
+
+emtest:	start.r15 emtest.r15 usnet.lib
+	set PATH=$(PTH)\bin
+	echo $(LFLAGS) >tmp.lnk
+	echo -Z(CODE)CSTART,CODE,RCODE,CDATA,ZVECT,CONST,CSTR,CCSTR=2080 >>tmp.lnk
+	echo -Z(DATA)DATA,IDATA,UDATA,ECSTR,WCSTR,TEMP,CSTACK >>tmp.lnk
+	echo start.r15 emtest.r15 usnet.lib >>tmp.lnk
+	echo $(LIB) >>tmp.lnk
+	$(LNK) -f tmp.lnk
+        hexobj $*.hex $*.dwn
+
+ltest:	start.r15 ltest.r15 route.r15 tcp.r15 udp.r15 ip.r15 icmp.r15 slip.r15 wrap.r15 nprintf.r15 nscanf.r15 putchr.r15
+	set C_INCLUDE=$(PTH)\ 
+	$(CC) net.c $(CFLAGS) -DWRAPTEST
+	$(CC) support.c $(CFLAGS) -DWRAPTEST
+	echo $(LFLAGS) >tmp.lnk
+	echo -Z(CODE)CSTART,CODE,RCODE,CDATA,ZVECT,CONST,CSTR,CCSTR=2080 >>tmp.lnk
+	echo -Z(DATA)DATA,IDATA,UDATA,ECSTR,WCSTR,TEMP,CSTACK >>tmp.lnk
+	echo start.r15 ltest.r15 net.r15 route.r15 tcp.r15 udp.r15 ip.r15 >>tmp.lnk
+	echo icmp.r15 slip.r15 wrap.r15 >>tmp.lnk
+	echo nprintf.r15 nscanf.r15 support.r15 putchr.r15 >>tmp.lnk
+	echo $(LIB) >>tmp.lnk
+	$(LNK) -f tmp.lnk
+        hexobj $*.hex $*.dwn
+	erase net.r15
+	erase support.r15
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.r15
+	erase *.map
+	erase *.tmp
+	erase tmp.*
+	erase usnet.lib
+

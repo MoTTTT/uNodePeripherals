@@ -1,0 +1,166 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# WATCOM makefile for protected mode 386 USNET
+ENDIAN=LITTLE   		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+FARDEF=far			#use this in CFLAGS if segmented 
+
+MMODL=s				#memory model
+
+TRACE=3				#trace level, 0=none, 9=maximum
+
+PTH=m:\public\watcom		#where the compiler is
+PTH2=m:\public\phar386\bin	#pharlap directory
+
+#tool names ===============================================================
+
+LPTH = $(PTH)\lib386\dos
+CL = wcl386
+CC = $(PTH)\bin\wcc386p
+AS = $(PTH2)\386asm
+LNK = $(PTH)\bin\wlink
+CFLAGS = /w3 /ot /d2 /3s /s /DTRACE=$(TRACE) /D$(ENDIAN) /DFARDEF=far
+AFLAGS = -twoc -nolist 
+LIBR = $(PTH)\binb\wlib
+
+#default rules ===========================================================
+.SUFFIXES :
+.SUFFIXES : .lst .obj .asm .c 
+
+.c.obj:
+	set path=$(PTH)\bin;$(PTH)\binb
+	set include=$(PTH)\h
+	$(CC) $< $(CFLAGS)
+.obj.lst:
+	set path=$(PTH)\bin;$(PTH)\binb
+	set include=$(PTH)\h
+	wdisasm $< > $*.lst
+.asm.obj:
+	set PATH=$(PTH2)
+	$(AS) $< $(AFLAGS)
+
+usnet.lib:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.obj: ping.c $(INCS) icmp.h
+fttest.obj: fttest.c $(INCS)
+sotest.obj: sotest.c $(INCS)
+ltest.obj: ltest.c $(INCS)
+bootp.obj: bootp.c $(INCS)
+tftp.obj: tftp.c $(INCS)
+ftp.obj: ftp.c $(INCS)
+support.obj: support.c $(INCS) driver.h
+nprintf.obj: nprintf.c 
+nscanf.obj: nscanf.c 
+route.obj: route.c $(INCS)
+socket.obj: socket.c socket.h $(INCS)
+ip.obj: ip.c $(INCS)
+icmp.obj: icmp.c $(INCS) icmp.h
+arp.obj: arp.c $(INCS)
+rarp.obj: rarp.c $(INCS)
+ethernet.obj: ethernet.c $(INCS) ethernet.h
+slip.obj: slip.c $(INCS) 
+wrap.obj: wrap.c $(INCS)
+udp.obj: udp.c $(INCS)
+tcp.obj: tcp.c $(INCS)
+netconf.obj: netconf.c $(INCS) drvconf.h
+net.obj: net.c $(INCS)
+driver.obj: driver.c $(INCS) driver.h
+wd8003.obj: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.obj: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+ne2100.obj: ne2100.c $(INCS) driver.h ethernet.h ns8390.h
+exp16.obj: exp16.c $(INCS) driver.h ethernet.h i82586.h
+en360.obj: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.obj: i8250.c $(INCS) driver.h 
+d2681.obj: d2681.c $(INCS) driver.h
+hcsci11.obj: hcsci11.c $(INCS) driver.h
+hcsci16.obj: hcsci16.c $(INCS) driver.h
+h64180.obj: h64180.c $(INCS) driver.h
+suppa.obj: suppa.asm
+clock.obj: clock.c
+
+#building the libraries =====================================================
+
+usnet.lib:	 netconf.obj net.obj socket.obj route.obj ftp.obj tftp.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj wd8003.obj ne2000.obj ne2100.obj exp16.obj slip.obj i8250.obj d2681.obj wrap.obj support.obj driver.obj suppa.obj nprintf.obj nscanf.obj clock.obj
+	-erase usnet.lib
+	$(LIBR) usnet.lib +netconf.obj+net.obj+socket.obj+route.obj+ftp.obj
+	$(LIBR) usnet.lib +tftp.obj+tcp.obj+udp.obj+ip.obj+icmp.obj+arp.obj
+	$(LIBR) usnet.lib +rarp.obj+ethernet.obj+wd8003.obj+ne2000.obj
+	$(LIBR) usnet.lib +ne2100.obj+exp16.obj+slip.obj+i8250.obj+d2681.obj
+	$(LIBR) usnet.lib +wrap.obj+nprintf.obj+nscanf.obj+support.obj
+	$(LIBR) usnet.lib +driver.obj+suppa.obj+clock.obj
+
+#building the programs =====================================================
+# WVIDEO:  wvideo /trap=pls <program>
+
+ping:	ping.obj usnet.lib
+	set watcom=$(PTH)
+	set lib=$(PTH)\lib386;$(PTH)\lib386\dos
+	echo DEBUG ALL >tmp.lnk
+	echo FILE ping,usnet.lib >>tmp.lnk
+	echo FORMAT PHARLAP >>tmp.lnk
+	echo OPTION MAP >>tmp.lnk
+	$(LNK) @tmp.lnk
+
+bench:	bench.obj usnet.lib
+	set watcom=$(PTH)
+	set lib=$(PTH)\lib386;$(PTH)\lib386\dos
+	echo DEBUG ALL >tmp.lnk
+	echo FILE bench,usnet.lib >>tmp.lnk
+	echo FORMAT PHARLAP >>tmp.lnk
+	echo OPTION MAP >>tmp.lnk
+	$(LNK) @tmp.lnk
+
+fttest:	fttest.obj usnet.lib
+	set watcom=$(PTH)
+	set lib=$(PTH)\lib386;$(PTH)\lib386\dos
+	echo DEBUG ALL >tmp.lnk
+	echo FILE fttest,usnet.lib >>tmp.lnk
+	echo FORMAT PHARLAP >>tmp.lnk
+	echo OPTION MAP >>tmp.lnk
+	$(LNK) @tmp.lnk
+
+sotest:	sotest.obj usnet.lib
+	set watcom=$(PTH)
+	set lib=$(PTH)\lib386;$(PTH)\lib386\dos
+	echo DEBUG ALL >tmp.lnk
+	echo FILE sotest,usnet.lib >>tmp.lnk
+	echo FORMAT PHARLAP >>tmp.lnk
+	echo OPTION MAP >>tmp.lnk
+	$(LNK) @tmp.lnk
+
+ltest:	ltest.obj net.obj route.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj slip.obj wrap.obj support.obj nprintf.obj nscanf.obj putchr.obj clock.obj
+	set watcom=$(PTH)
+	set path=$(PTH)\bin;$(PTH)\binb
+	set include=$(PTH)\h
+	$(CC) $(CFLAGS) /DWRAPTEST net.c
+	$(CC) $(CFLAGS) /DWRAPTEST support.c
+	set lib=$(PTH)\lib386;$(PTH)\lib386\dos
+	echo DEBUG ALL >tmp.lnk
+	echo FILE ltest,net,route,tcp,udp,ip,icmp,arp,rarp,ethernet >>tmp.lnk
+	echo FILE slip,wrap,nprintf,nscanf,support,putchr,clock >>tmp.lnk
+	echo FORMAT PHARLAP >>tmp.lnk
+	echo OPTION MAP >>tmp.lnk
+	$(LNK) @tmp.lnk
+	erase net.obj
+	erase support.obj
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.err
+	erase *.obj
+	erase *.map
+	erase fttest.ex?
+	erase ltest.ex?
+	erase ping.ex?
+	erase usnet.lib
+

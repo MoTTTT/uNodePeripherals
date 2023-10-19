@@ -1,0 +1,146 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# Microtek Research (MRI) makefile for SPARC USNET
+ENDIAN=BIG		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+TRACE=3			#trace level, 0=none, 9=maximum
+
+BASE=0x403000		#load base: 10000 for the Cogent 68030 board
+			#	    403000 for the Motorola 68360 board
+
+PTH=m:\public\mri	#where the compiler is
+
+#tool names =================================================================
+
+AFLAGS = -fxm
+CFLAGS = -c -DTRACE=$(TRACE) -D$(ENDIAN)
+LFLAGS = -o $*.dwn -m
+CPTH = $(PTH)\mccsp
+CC = $(CPTH)\mccsp
+AS = $(PTH)\asmsp\asmsp
+LNK = $(PTH)\asmsp\lnksp
+LIBR = $(PTH)\asmsp\libsp
+
+#default rules ===========================================================
+.SUFFIXES:
+.SUFFIXES: .map .dwn .obj .s .c
+
+.c.obj:				# C to object
+	$(CC) $(CFLAGS) $<
+.c.src: 			# C to listing
+	$(CC) $(CFLAGS) -Fsm -S $<
+.s.obj:				# assembly to object
+	$(AS) $(AFLAGS) $<
+
+usnet.lib:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.obj: ping.c $(INCS) icmp.h
+fttest.obj: fttest.c $(INCS)
+ltest.obj: ltest.c $(INCS)
+bootp.obj: bootp.c $(INCS)
+tftp.obj: tftp.c $(INCS)
+ftp.obj: ftp.c $(INCS)
+support.obj: support.c $(INCS) driver.h
+nprintf.obj: nprintf.c 
+nscanf.obj: nscanf.c 
+route.obj: route.c $(INCS)
+socket.obj: socket.c socket.h $(INCS)
+ip.obj: ip.c $(INCS)
+icmp.obj: icmp.c $(INCS) icmp.h
+arp.obj: arp.c $(INCS)
+rarp.obj: rarp.c $(INCS)
+ethernet.obj: ethernet.c $(INCS) ethernet.h
+slip.obj: slip.c $(INCS) 
+wrap.obj: wrap.c $(INCS)
+udp.obj: udp.c $(INCS)
+tcp.obj: tcp.c $(INCS)
+netconf.obj: netconf.c $(INCS) drvconf.h
+net.obj: net.c $(INCS)
+driver.obj: driver.c $(INCS) driver.h
+wd8003.obj: wd8003.c $(INCS) driver.h ethernet.h ne2000.h
+ne2000.obj: ne2000.c $(INCS) driver.h ethernet.h ne2000.h
+en360.obj: en360.c $(INCS) driver.h ethernet.h m360.h
+mb86960.obj: mb86960.c $(INCS) driver.h ethernet.h 
+i8250.obj: i8250.c $(INCS) driver.h 
+d2681.obj: d2681.c $(INCS) driver.h
+hcsci11.obj: hcsci11.c $(INCS) driver.h
+hcsci16.obj: hcsci16.c $(INCS) driver.h
+h64180.obj: h64180.c $(INCS) driver.h
+suppa.obj: suppa.s
+
+#building the libraries =====================================================
+
+usnet.lib:	 netconf.obj net.obj socket.obj route.obj ftp.obj tftp.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj slip.obj mb86960.obj d2681.obj wrap.obj support.obj driver.obj nprintf.obj nscanf.obj suppa.obj putchr.obj clock.obj
+	-erase usnet.lib
+	echo create usnet.lib >tmp.par
+	echo addmod netconf.obj,net.obj,socket.obj,route.obj,ftp.obj >>tmp.par
+	echo addmod tftp.obj,tcp.obj,udp.obj,ip.obj,icmp.obj,arp.obj >>tmp.par
+	echo addmod rarp.obj,ethernet.obj,slip.obj,mb86960.obj >>tmp.par
+	echo addmod d2681.obj,wrap.obj,nprintf.obj,nscanf.obj >>tmp.par
+	echo addmod support.obj,driver.obj,suppa.obj,putchr.obj >>tmp.par
+	echo addmod clock.obj >>tmp.par
+	echo save usnet.lib >>tmp.par
+	echo end >>tmp.par
+	$(LIBR) <tmp.par
+
+#building the programs =====================================================
+
+emtest:	start.obj emtest.obj usnet.lib
+	echo RESNUM 0x0,0x30005000 >tmp.lnk
+	echo PUBLIC __stacktop=0x30020000 >>tmp.lnk
+	echo PUBLIC __traptab=0x30004000 >>tmp.lnk
+	echo LOAD start.obj,$*.obj >>tmp.lnk
+	echo LOAD usnet.lib $(PTH)\mccsp\csplcs.lib >>tmp.lnk
+	$(LNK) $(LFLAGS) -c tmp.lnk >$*.map
+
+bench:	start.obj bench.obj usnet.lib
+	echo RESNUM 0x0,0x30005000 >tmp.lnk
+	echo PUBLIC __stacktop=0x30020000 >>tmp.lnk
+	echo PUBLIC __traptab=0x30004000 >>tmp.lnk
+	echo LOAD start.obj,$*.obj >>tmp.lnk
+	echo LOAD usnet.lib $(PTH)\mccsp\csplcs.lib >>tmp.lnk
+	$(LNK) $(LFLAGS) -c tmp.lnk >$*.map
+
+ltest:	start.obj ltest.obj route.obj tcp.obj udp.obj ip.obj icmp.obj arp.obj rarp.obj ethernet.obj slip.obj wrap.obj nprintf.obj nscanf.obj putchr.obj suppa.obj 
+	$(CC) $(CFLAGS) -DWRAPTEST net.c
+	$(CC) $(CFLAGS) -DWRAPTEST support.c
+	echo RESNUM 0x0,0x30005000 >tmp.lnk
+	echo PUBLIC __stacktop=0x30020000 >>tmp.lnk
+	echo PUBLIC __traptab=0x30004000 >>tmp.lnk
+	echo LOAD start.obj net.obj,route.obj,tcp.obj,udp.obj,ip.obj >>tmp.lnk
+	echo LOAD icmp.obj,arp.obj,rarp.obj,ethernet.obj,slip.obj >>tmp.lnk
+	echo LOAD wrap.obj,nprintf.obj,nscanf.obj,support.obj >>tmp.lnk
+	echo LOAD putchr.obj,suppa.obj >>tmp.lnk
+	echo LOAD $(PTH)\mccsp\csplcs.lib >>tmp.lnk
+	$(LNK) $(LFLAGS) -c tmp.lnk ltest.obj >$*.map
+	erase net.obj
+	erase support.obj
+
+chu:	start.obj chu.obj chus.obj nprintf.obj putchr.obj suppa.obj 
+	echo RESNUM 0x0,0x30005000 >tmp.lnk
+	echo PUBLIC __stacktop=0x30020000 >>tmp.lnk
+	echo PUBLIC __traptab=0x30004000 >>tmp.lnk
+	echo LOAD start.obj chus.obj nprintf.obj putchr.obj suppa.obj >>tmp.lnk
+	echo LOAD $(PTH)\mccsp\csplcs.lib >>tmp.lnk
+	$(LNK) $(LFLAGS) -c tmp.lnk chu.obj >$*.map
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.dwn
+	erase *.obj
+	erase *.map
+	erase tmp.*
+	erase usnet.lib
+
+upload:	upload.c sio.asm
+	bcc upload.c sio.asm

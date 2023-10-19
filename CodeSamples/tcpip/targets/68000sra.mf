@@ -1,0 +1,134 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# Sierra makefile for 68000 USNET
+ENDIAN=BIG		#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+TRACE=3			#trace level, 0=none, 9=maximum
+
+BASE=0x10000		#load base: 10000 for the Cogent 68030 board
+			#	    403000 for the Motorola 68360 board
+
+DSPLY=2			#display: 1 uses Motorola monitor function
+			#	  2 2681 in the Cogent 68030 board
+
+TIMER=2			#timer: 1 uses Motorola monitor function
+			#	2 PIP in the Cogent 68030 board
+			#	3 CPM in the 68360
+
+PTH=m:\PUBLIC\SIERRA	#where the compiler is
+
+#tool names ===============================================================
+
+CC = $(PTH)\bin\com020x
+START = crt332
+LFLAGS = -m -QT$(BASE) -x 332 
+LL = $(PTH)\bin\link68x
+AS = $(PTH)\bin\asm68kx
+CFLAGS = -Or1 -q -Qlfcs -XL -DTRACE=$(TRACE) -D$(ENDIAN) -DDSPLY=$(DSPLY) -DTIMER=$(TIMER)
+AFLAGS = -AQ
+LIBR = $(PTH)\bin\lib68
+
+#default rules ===========================================================
+.SUFFIXES: .sym .dwn .out .o .s .c
+.c.o:
+	set SIERRA=$(PTH)
+	$(CC) $(CFLAGS) $< $*.tmp
+	$(PTH)\bin\asm68x $(AFLAGS) $*.tmp
+.c.s:
+	set PATH=$(PTH)\cmd
+	$(CC) -S $(CFLAGS) $<
+.s.o:
+	$(AS) $(AFLAGS) $<
+.out.dwn:
+	set SIERRA=$(PTH)
+	$(PTH)\bin\sldr $< $*.dwn
+.out.sym:
+	$(PTH)\bin\nm68 $< >$*.sym
+
+usnet.a:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.o: ping.c $(INCS) icmp.h
+fttest.o: fttest.c $(INCS)
+ltest.o: ltest.c $(INCS)
+bootp.o: bootp.c $(INCS)
+tftp.o: tftp.c $(INCS)
+ftp.o: ftp.c $(INCS)
+support.o: support.c $(INCS) driver.h
+nprintf.o: nprintf.c 
+nscanf.o: nscanf.c 
+route.o: route.c $(INCS)
+socket.o: socket.c socket.h $(INCS)
+ip.o: ip.c $(INCS)
+icmp.o: icmp.c $(INCS) icmp.h
+arp.o: arp.c $(INCS)
+rarp.o: rarp.c $(INCS)
+ethernet.o: ethernet.c $(INCS) ethernet.h
+slip.o: slip.c $(INCS) 
+wrap.o: wrap.c $(INCS)
+udp.o: udp.c $(INCS)
+tcp.o: tcp.c $(INCS)
+netconf.o: netconf.c $(INCS) drvconf.h
+net.o: net.c $(INCS)
+driver.o: driver.c $(INCS) driver.h
+wd8003.o: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.o: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.o: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.o: i8250.c $(INCS) driver.h 
+d2681.o: d2681.c $(INCS) driver.h
+hcsci11.o: hcsci11.c $(INCS) driver.h
+hcsci16.o: hcsci16.c $(INCS) driver.h
+h64180.o: h64180.c $(INCS) driver.h
+suppa.o: suppa.asm
+
+#building the libraries =====================================================
+
+usnet.a:	 netconf.o net.o socket.o route.o ftp.o tftp.o tcp.o udp.o ip.o icmp.o arp.o rarp.o ethernet.o en360.o slip.o d2681.o wrap.o support.o driver.o suppa.o nprintf.o nscanf.o clock.o putchr.o
+	erase usnet.a
+	$(LIBR) -c usnet.a netconf.o net.o socket.o route.o ftp.o
+	$(LIBR) -a usnet.a tftp.o tcp.o udp.o ip.o icmp.o arp.o rarp.o
+	$(LIBR) -a usnet.a ethernet.o en360.o slip.o
+	$(LIBR) -a usnet.a d2681.o wrap.o nprintf.o nscanf.o support.o
+	$(LIBR) -a usnet.a driver.o suppa.o clock.o putchr.o
+
+#building the programs =====================================================
+
+emtest:	emtest.dwn
+emtest.out:	start.o emtest.o usnet.a
+	set SIERRA=$(PTH)
+	set PATH=$(PTH)\cmd
+	$(LL) $(LFLAGS) -o $*.out start.o $*.o usnet.a -l c
+
+#utility functions  =======================================================
+
+ltest:	ltest.dwn
+ltest.out:	start.o ltest.o usnet.a
+	set SIERRA=$(PTH)
+	set PATH=$(PTH)\bin
+	$(CC) $(CFLAGS) -DWRAPTEST net.c net.tmp
+	$(PTH)\bin\asm68x $(AFLAGS) net.tmp
+	$(CC) $(CFLAGS) -DWRAPTEST support.c support.tmp
+	$(PTH)\bin\asm68x $(AFLAGS) support.tmp
+	$(LL) $(LFLAGS) -o $*.out start.o $*.o net.o support.o usnet.a -l c
+	erase net.o
+	erase support.o
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.xrf
+	erase *.dwn
+	erase *.out
+	erase *.o
+	erase *.map
+	erase *.tmp
+	erase usnet.a
+

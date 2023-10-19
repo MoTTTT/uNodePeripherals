@@ -1,0 +1,102 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# UNIX makefile for SPARC USNET
+
+#user options ==============================================================
+
+ENDIAN=BIG   	#Motorola byte order BIG, Intel LITTLE
+
+FARDEF=far	#use this in CFLAGS if segmented 
+
+MMODL=s		#memory model
+
+CVERS=31	#Borland compiler version: 20, 30 or 31
+
+TRACE=3		#trace level, 0=none, 9=maximum
+
+#path and tool names ======================================================
+
+CC = acc
+CFLAGS = -c -g -Xc -D$(ENDIAN) -DTRACE=$(TRACE)
+LIBR = ar
+
+#default rules ===========================================================
+
+.c.o:
+	$(CC) $(CFLAGS) $<
+
+usnet.a:			#default make entry
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.o: ping.c $(INCS) icmp.h
+fttest.o: fttest.c $(INCS)
+ltest.o: ltest.c $(INCS)
+bootp.o: bootp.c $(INCS)
+tftp.o: tftp.c $(INCS)
+ftp.o: ftp.c $(INCS)
+support.o: support.c $(INCS) driver.h
+nprintf.o: nprintf.c 
+nscanf.o: nscanf.c 
+route.o: route.c $(INCS)
+socket.o: socket.c socket.h $(INCS)
+ip.o: ip.c $(INCS)
+icmp.o: icmp.c $(INCS) icmp.h
+arp.o: arp.c $(INCS)
+rarp.o: rarp.c $(INCS)
+ethernet.o: ethernet.c $(INCS) ethernet.h
+slip.o: slip.c $(INCS) 
+wrap.o: wrap.c $(INCS)
+udp.o: udp.c $(INCS)
+tcp.o: tcp.c $(INCS)
+netconf.o: netconf.c $(INCS) drvconf.h
+net.o: net.c $(INCS)
+driver.o: driver.c $(INCS) driver.h
+wd8003.o: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.o: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.o: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.o: i8250.c $(INCS) driver.h 
+d2681.o: d2681.c $(INCS) driver.h
+hcsci11.o: hcsci11.c $(INCS) driver.h
+hcsci16.o: hcsci16.c $(INCS) driver.h
+h64180.o: h64180.c $(INCS) driver.h
+putchr.o: putchr.c
+suppa.o: suppa.s
+
+#building the libraries =====================================================
+
+usnet.a:	 netconf.o net.o socket.o route.o ftp.o tftp.o tcp.o udp.o ip.o icmp.o arp.o rarp.o ethernet.o wd8003.o ne2000.o slip.o i8250.o d2681.o wrap.o support.o driver.o suppa.o nprintf.o nscanf.o
+	-rm usnet.a
+	$(LIBR) rc usnet.a netconf.o net.o socket.o route.o ftp.o
+	$(LIBR) r usnet.a tftp.o tcp.o udp.o ip.o icmp.o arp.o rarp.o
+	$(LIBR) r usnet.a ethernet.o wd8003.o ne2000.o slip.o i8250.o
+	$(LIBR) r usnet.a d2681.o wrap.o nprintf.o nscanf.o
+	$(LIBR) r usnet.a support.o driver.o suppa.o 
+	ranlib usnet.a
+
+#building the programs =====================================================
+
+ping:	ping.o usnet.a
+	$(CC) -o ping ping.o usnet.a
+
+fttest:	fttest.o usnet.a
+	$(CC) -o fttest fttest.o usnet.a
+
+ltest:	ltest.o route.o tcp.o udp.o ip.o icmp.o arp.o rarp.o ethernet.o slip.o wrap.o nprintf.o nscanf.o putchr.o
+	$(CC) $(CFLAGS) -DWRAPTEST net.c
+	$(CC) $(CFLAGS) -DWRAPTEST support.c
+	$(CC) -o ltest ltest.o route.o net.o tcp.o udp.o ip.o icmp.o arp.o rarp.o wrap.o ethernet.o slip.o support.o nprintf.o nscanf.o putchr.o
+	rm net.o support.o
+
+boot:	boot.o bootp.o usnet.a
+	$(CC) -o boot boot.o bootp.o usnet.a
+
+#utility functions  =======================================================
+
+clean:
+	-rm *.lst *.o *.map *.lst usnet.a
+

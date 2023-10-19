@@ -1,0 +1,134 @@
+
+#  +++=>>> * %n  Edition: %v  Last changed: %f  By: %w *
+# **
+#  +++=>>> '%l'
+# Currently extracted for edit by: ''
+#
+# Introl makefile for HC16 USNET
+ENDIAN=BIG			#Motorola byte order BIG, Intel LITTLE
+
+#user options ==============================================================
+
+MODEL=n				#memory model: n = near, f = far
+
+FARDEF=__far			#use this in CFLAGS if segmented 
+
+TRACE=0				#trace level, 0=none, 9=maximum
+
+PTH=o:\public\introl37		#path to the compiler
+				#use no older than 3.07
+
+#tool names ===============================================================
+
+CC = $(PTH)\bin\CC16
+CFLAGS = $(MODFLG) -gv16 -r -gg -m$(ENDIAN) -mFARDEF=$(FARDEF) -mTRACE=$(TRACE)
+AS = $(PTH)\bin\as16
+AFLAGS = -b -h -l -q -y=$(PTH)\libsrc\gen\gen16
+LN = $(PTH)\bin\ild16
+LIBR = $(PTH)\bin\iar
+
+#default rules ===========================================================
+.SUFFIXES : .c .s .o16 .out .0 .dwn
+
+usnet.a:			#default make entry
+
+.c.o16:
+	set PATH=$(PTH)\bin
+	set INTROL=$(PTH)
+	$(CC) $(CFLAGS) $<
+.s.o16:
+	set INTROL=$(PTH)
+	$(AS) $< $(AFLAGS)
+.out.map:
+    	$(PTH)\bin\idump -t $< >$*.map
+.out.dwn:
+	$(PTH)\bin\ihex -o$*.0 $<
+	$(FIX) $*.0 $*.dwn
+.out.adr:
+	$(PTH)\bin\iadr -o$*.adr -w88 $<
+start.o16:
+	set INTROL=$(PTH)
+	$(AS) $(PTH)\libsrc\gen\gen16\start.s $(AFLAGS)
+
+#object dependencies ======================================================
+INCS = net.h local.h support.h
+ping.o16: ping.c $(INCS) icmp.h
+fttest.o16: fttest.c $(INCS)
+ltest.o16: ltest.c $(INCS)
+bootp.o16: bootp.c $(INCS)
+tftp.o16: tftp.c $(INCS)
+ftp.o16: ftp.c $(INCS)
+support.o16: support.c $(INCS) driver.h
+route.o16: route.c $(INCS)
+socket.o16: socket.c socket.h $(INCS)
+ip.o16: ip.c $(INCS)
+icmp.o16: icmp.c $(INCS) icmp.h
+arp.o16: arp.c $(INCS)
+rarp.o16: rarp.c $(INCS)
+ethernet.o16: ethernet.c $(INCS) ethernet.h
+slip.o16: slip.c $(INCS) 
+wrap.o16: wrap.c $(INCS)
+udp.o16: udp.c $(INCS)
+tcp.o16: tcp.c $(INCS)
+netconf.o16: netconf.c $(INCS) drvconf.h
+net.o16: net.c $(INCS)
+driver.o16: driver.c $(INCS) driver.h
+wd8003.o16: wd8003.c $(INCS) driver.h ethernet.h ns8390.h
+ne2000.o16: ne2000.c $(INCS) driver.h ethernet.h ns8390.h
+en360.o16: en360.c $(INCS) driver.h ethernet.h m360.h
+i8250.o16: i8250.c $(INCS) driver.h 
+d2681.o16: d2681.c $(INCS) driver.h
+hcsci11.o16: hcsci11.c $(INCS) driver.h
+hcsci16.o16: hcsci16.c $(INCS) driver.h
+h64180.o16: h64180.c $(INCS) driver.h
+nprintf.o16: nprintf.c
+suppa.o16: suppa.asm
+
+#building the libraries =====================================================
+
+usnet.a: 	netconf.o16 net.o16 route.o16 tcp.o16 udp.o16 ip.o16 icmp.o16 arp.o16 rarp.o16 ethernet.o16 slip.o16 wrap.o16 support.o16 driver.o16 nprintf.o16 nscanf.o16 socket.o16 hc16sci.o16 suppa.o16
+	-erase usnet.a
+	$(LIBR) -r usnet.a netconf.o16 net.o16 route.o16 tcp.o16 udp.o16 ip.o16
+	$(LIBR) -r usnet.a icmp.o16 arp.o16 rarp.o16 ethernet.o16 slip.o16 
+	$(LIBR) -r usnet.a wrap.o16 support.o16 driver.o16 nprintf.o16
+	$(LIBR) -r usnet.a nscanf.o16 socket.o16 hc16sci.o16 suppa.o16
+
+#building the programs =====================================================
+
+fixcrcr.exe:	fixcrcr.c
+		bcc fixcrcr.c
+
+emtest:	fixcrcr.exe emtest.dwn
+emtest.dwn:
+	$(PTH)\bin\ihex -oemtest.0 emtest.out
+	fixcrcr emtest.0 emtest.dwn
+emtest.out:	emtest.o16 start.o16 usnet.a
+	set PATH=$(PTH)\bin
+	set INTROL=$(PTH)
+	$(LN) -d$(PTH)\lib -gmt1 -oemtest.out emtest.o16 usnet.a
+
+ltest:	fixcrcr.exe ltest.dwn
+ltest.dwn:
+	$(PTH)\bin\ihex -oltest.0 ltest.out
+	fixcrcr ltest.0 ltest.dwn
+ltest.out:	ltest.o16 start.o16 usnet.a
+	set PATH=$(PTH)\bin
+	set INTROL=$(PTH)
+	$(CC) $(CFLAGS) -mWRAPTEST net.c
+	$(CC) $(CFLAGS) -mWRAPTEST support.c
+	$(LN) -d$(PTH)\lib16 -gmt1 -oltest.out ltest.o16 net.o16 support.o16 usnet.a
+	erase net.o16
+	erase support.o16
+
+#utility functions  =======================================================
+
+clean:
+	erase *.lst
+	erase *.dwn
+	erase *.out
+	erase *.o16
+	erase *.s16
+	erase *.map
+	erase *.0
+  	erase usnet.a
+

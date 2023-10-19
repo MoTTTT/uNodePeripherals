@@ -1,0 +1,97 @@
+/****************************************************************************/
+/*                  Master Controller 87C552                                */
+/*                  J.Du Preez '92                                          */
+/****************************************************************************/
+
+#pragma ROM( COMPACT )
+#pragma CODE
+																								 /* assembly mnemonics list */
+#include <reg552.h>
+#include <stdio.h>		
+#include <intrins.h>
+#include <string.h>
+#include <sio552.h>
+#include <n3inc.c>
+
+unsigned char pos;
+unsigned char idata PC_M552[7];
+unsigned char idata M552_PC[] = { "FM-ON" };
+unsigned char idata M552_I2C[3] = { 0x000, 0x0D3, 0x02C };
+unsigned char idata I2C_M552[2];
+unsigned char idata COMP[] = { "FM-MODE" };
+unsigned char idata COMP1[] = { 0x0D3, 0x02C }; 
+unsigned char idata Error[] = { "ERROR" };
+
+/************************* SERIAL COMMUNICATION ****************************/
+
+SerCom( )	interrupt 4			// RS-232 interrupt
+{
+	if( RI == 1 )
+	{
+		PC_M552[pos] = S0BUF;
+		pos++;
+	}
+	RI = 0;
+}
+
+/***************************** INITIALIZATION ********************************/
+
+init( )						// initialize 87C552
+{
+	ES0 = 1;				// enable serial port interrupt
+	EX1 = 1;				// enable external interrupt1
+	IT1 = 1;				// falling edge triggered
+	init_lcd( );				// initialize lcd display
+	init_sio0( );				// initialize RS-232 port
+	sio1_init( 0x48 );			// initialize I2C bus	
+	SLAVE_R_flag = 0;			// 
+	set_sio1_slave( I2C_M552, 2 );		// setup I2C to receive 9 bytes
+}
+
+/******************************* MAIN FUNCTION *******************************/
+
+main( )
+{
+	int ptr, ptr1;
+
+	init( );
+	while( 1 )
+	{	
+		pos = 0;
+		while( pos != 7 );
+		ptr = strcmp( PC_M552, COMP );
+		if( ptr == 0 )
+		{
+			set_lcd( LINE_1 );
+			printf( "%c%c%c%c%c%c%c", PC_M552[0], PC_M552[1], PC_M552[2],
+				 PC_M552[3], PC_M552[4], PC_M552[5], PC_M552[6] );
+			set_sio1_master( 0x50, 3, M552_I2C );
+			while( !SLAVE_R_flag );
+			SLAVE_R_flag = 0;
+			set_lcd( LINE_2 );
+			printf( "%2bX%2bX", I2C_M552[0], I2C_M552[1] );
+			ptr1 = strncmp( I2C_M552, COMP1, 2 );
+			if( ptr1 == 0 )
+			{ 
+				io_stream = RS232;
+				printf( "\n%s", M552_PC );
+				io_stream = LCD_COMMAND;
+			}
+			else
+			{
+				io_stream = RS232;
+				printf( "\n%s", Error );
+				io_stream = LCD_COMMAND;
+				
+			}
+		}
+		else
+		{
+			io_stream = RS232;
+			printf ( "\n%s", Error );
+			io_stream = LCD_COMMAND;
+		}			
+	}
+}
+
+/********************************* END **************************************/

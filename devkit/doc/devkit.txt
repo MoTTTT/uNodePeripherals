@@ -1,0 +1,25 @@
+		uNode Developers Kit Release 0.1
+
+The uNode developers kit contains the following resources:
+-uNode Peripheral Library
+	Small memory model build
+	Large memory model build
+	Header files
+	Test Suite
+	Sample Source Code
+-uNode Extender Card
+	Power supply
+	Break out header pins for 80C552 busses and signals
+-uNode Documentation
+	Philips 80C552 8 bit microcontroller handbook
+	uNode Peripheral Library Programmers manual
+	Data Sheets
+-Cables
+	1,5m 9V Power Cable
+	1,5m RS232 Serial Communication Cable
+-Support
+	1 month telephonic support
+	6 months e-mail support
+
+
+			    Copyright Q Solutions

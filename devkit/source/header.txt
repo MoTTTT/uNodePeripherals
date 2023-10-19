@@ -1,0 +1,6 @@
+/*			Copyright Q Solutions				*/
+/*	File:		header.txt					*/
+/*	Programmer:	MoT						*/
+/*	Project:	uNode Library					*/
+/*	Module:		Prototype Module Header				*/
+/*									*/

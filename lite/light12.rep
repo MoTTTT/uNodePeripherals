@@ -1,0 +1,373 @@
+
+
+    PCB Components                                               LIGHT12.PCB
+
+                                        
+
+    Ref Designator    Pattern           Type              Value
+    ========================================================================
+
+    C1                CAP900            CAP               330N             
+    C2                CAP900            CAP               330N             
+    C3                CAP900            CAP               330N             
+    C4                CAP900            CAP               330N             
+    C5                CAP900            CAP               330N             
+    C6                CAP100RP                                             
+    C7                CAP200            CAP               100N             
+    C8                CAP900            CAP               330N             
+    C9                CAP900            CAP               330N             
+    C10               CAP900            CAP               330N             
+    F1                FUSE900           FUSE              VAL              
+    F2                FUSE900           FUSE              VAL              
+    F3                FUSE900           FUSE              VAL              
+    F4                FUSE900           FUSE              VAL              
+    F5                FUSE900           FUSE              VAL              
+    F6                FUSE900           FUSE              VAL              
+    F7                FUSE900           FUSE              VAL              
+    F8                FUSE900           FUSE              VAL              
+    J1                MAINS2            CONN2                              
+    J2                MAINS3            CONN3                              
+    J3                MAINS2            CONN2                              
+    J4                MAINS2            CONN2                              
+    J5                MAINS2            CONN2                              
+    J6                MAINS2            CONN2                              
+    J7                MAINS2            CONN2                              
+    J8                MAINS2            CONN2                              
+    J9                MAINS2            CONN2                              
+    P1                CON4PIN                                              
+    P2                CON10PIN          DB10M                              
+    P5                QPYRAMID                                             
+    P7                DIN64M                                               
+    Q1                BT136             TRIAC             BT136            
+    Q2                BT136             TRIAC             BT136            
+    Q3                BT136             TRIAC             BT136            
+    Q4                BT136             TRIAC             BT136            
+    Q5                BT136             TRIAC             BT136            
+    Q6                BT136             TRIAC             BT136            
+    Q7                BT136             TRIAC             BT136            
+    Q8                BT136             TRIAC             BT136            
+    R1                RES400            RES               100R             
+    R2                RES850            RES               100R 1W          
+    R3                RES400                                               
+    R4                RES400            RES               100R             
+    R5                RES400            RES               100R             
+    R6                RES850            RES               100R 1W          
+    R7                RES400                                               
+    R8                RES400            RES               100R             
+    R9                RES400            RES               100R             
+    R10               RES850            RES               100R 1W          
+    R11               RES400                                               
+
+                                        
+
+    19-Aug-96  00:27                                                 Page  1
+
+    PCB Components                                               LIGHT12.PCB
+
+                                        
+
+    Ref Designator    Pattern           Type              Value
+    ========================================================================
+
+    R12               RES400            RES               100R             
+    R13               RES400            RES               1K               
+    R14               RES400            RES               100R             
+    R15               RES850            RES               100R 1W          
+    R16               RES400            RES               1K               
+    R17               RES400                                               
+    R18               RES400            RES               100R             
+    R19               RES400            RES               1K               
+    R20               RES400            RES               100R             
+    R21               RES850            RES               100R 1W          
+    R22               RES400                                               
+    R23               RES400            RES               100R             
+    R24               RES400            RES               100R             
+    R25               RES850            RES               100R 1W          
+    R26               RES400                                               
+    R27               RES400            RES               100R             
+    R28               RES400            RES               100R             
+    R29               RES850            RES               100R 1W          
+    R30               RES400                                               
+    R31               RES400            RES               100R             
+    R32               RES400            RES               100R             
+    R33               RES850            RES               100R 1W          
+    R34               RES400                                               
+    R35               RES400            RES               100R             
+    S1                DIP6              SWITCH3DIPISOL    VAL              
+    U1                DIP6              MOC3022N                           
+    U2                DIP6              MOC3022N                           
+    U3                DIP6              MOC3022N                           
+    U4                DIP6              MOC3022N                           
+    U5                DIP16             PCF8574                            
+    U6                DIP6              MOC3022N                           
+    U7                DIP6              MOC3022N                           
+    U8                DIP6              MOC3022N                           
+    U9                DIP6              MOC3022N                           
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        
+
+    19-Aug-96  00:27                                                 Page  2
+
+    PCB Statistics                                               LIGHT12.PCB
+
+                                        
+
+    ========================================================================
+
+    Arcs:     29     Components:      84     Pads:   301     Polygons:     0
+    Lines:   943     Text strings:   193     Vias:     0     Holes:      301
+
+    ------------------------------------------------------------------------
+
+    Text Summary -        T_0060_010_0:     7
+                          T_0060_010_1:   125
+                          T_0060_010_2:     2
+                          T_0060_010_3:    32
+                          T_0060_014_0:     7
+                          T_0060_014_4:     2
+                          T_0060_020_0:     8
+                          T_0200_040_0:     9
+                          T_0200_040_4:     1
+    
+    Line Summary -        L_010:   323
+                          L_012:   271
+                          L_014:     5
+                          L_016:   136
+                          L_020:    31
+                          L_030:    55
+                          L_048:   133
+                          L_080:    18
+    
+    Pad Summary  -        P_EL_0060_0060_020_AL:   104
+                          P_EL_0060_0060_034_AL:     3
+                          P_EL_0060_0060_038_AL:    62
+                          P_EL_0070_0090_030_AL:    16
+                          P_EL_0080_0060_020_AL:     1
+                          P_EL_0080_0060_034_AL:     9
+                          P_EL_0080_0080_030_AL:    32
+                          P_MH_0120_0120_060_AL:     2
+                          P_MH_0156_0156_110_AL:     2
+                          P_OV_0150_0110_030_AL:     1
+                          P_OV_0150_0120_030_AL:    18
+                          P_RR_0150_0110_044_AL:    16
+                          P_SQ_0060_0060_020_AL:    22
+                          P_SQ_0060_0060_034_AL:     2
+                          P_SQ_0060_0060_038_AL:     2
+                          P_SQ_0070_0090_030_AL:     8
+                          P_SQ_0080_0060_020_AL:     1
+    
+    Hole Summary -        H_020:   128
+                          H_030:    75
+                          H_034:    14
+                          H_038:    64
+                          H_044:    16
+                          H_060:     2
+                          H_110:     2
+    
+    Plane Connections -   Power Thermals:      0
+
+                                        
+
+    19-Aug-96  00:27                                                 Page  1
+
+    PCB Statistics                                               LIGHT12.PCB
+
+                                        
+
+    ========================================================================
+
+                          Power Directs:       0
+                          Ground Thermals:     0
+                          Ground Directs:      0
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        
+
+    19-Aug-96  00:27                                                 Page  2
+
+    Design Rule Check Report                                     LIGHT12.PCB
+
+                                        
+
+    ========================================================================
+
+    DRC Clearances (in mils)
+    ------------------------
+
+                   Top   Bot  Mid1  Mid2  Mid3  Mid4  Mid5  Mid6  Mid7  Mid8
+
+      Pad-to-Pad    12    12    13    13    13    13    13    13    13    13
+     Pad-to-Line    10    10    10    10    10    10    10    10    10    10
+    Line-to-Line    11    11    11    11    11    11    11    11    11    11
+    
+    Hole-to-Hole    11
+    
+
+    DRC Report Options
+    ------------------
+
+    Clearance Violations:             enabled
+    Text Violations:                  enabled
+    Net List Violations:              enabled
+    Single Node Routes:               enabled
+    Unconnected Pins:                 enabled
+    Unplaced Nodes:                   enabled
+    
+
+    DRC Errors
+    ----------
+
+    
+
+    Unconnected Pins
+    ----------------
+
+       U1-3 at (7200,1950) 
+       U1-5 at (7500,2050) 
+       U2-3 at (6700,1950) 
+       U2-5 at (7000,2050) 
+       U3-3 at (6200,1950) 
+       U3-5 at (6500,2050) 
+       U4-3 at (5700,1950) 
+       U4-5 at (6000,2050) 
+       U6-3 at (5200,1950) 
+       U6-5 at (5500,2050) 
+       U7-3 at (4700,1950) 
+       U7-5 at (5000,2050) 
+       U8-3 at (4200,1950) 
+       U8-5 at (4500,2050) 
+       U5-13 at (3100,2875) 
+       U9-3 at (3700,1950) 
+       U9-5 at (4000,2050) 
+       P7-B19 at (2650,3675) 
+       P7-B20 at (2650,3775) 
+       P7-B21 at (2650,3875) 
+
+                                        
+
+    19-Aug-96  00:27                                                 Page  1
+
+    Design Rule Check Report                                     LIGHT12.PCB
+
+                                        
+
+    ========================================================================
+
+       P7-B22 at (2650,3975) 
+       P7-B23 at (2650,4075) 
+       P7-B24 at (2650,4175) 
+       P7-B25 at (2650,4275) 
+       P7-B26 at (2650,4375) 
+       P7-B27 at (2650,4475) 
+       P7-B28 at (2650,4575) 
+       P7-A28 at (2550,4575) 
+       P7-A27 at (2550,4475) 
+       P7-A26 at (2550,4375) 
+       P7-A25 at (2550,4275) 
+       P7-A24 at (2550,4175) 
+       P7-A23 at (2550,4075) 
+       P7-A22 at (2550,3975) 
+       P7-A21 at (2550,3875) 
+       P7-A20 at (2550,3775) 
+       P7-A19 at (2550,3675) 
+       P7-0 at (2450,1675) 
+       P7-0 at (2450,5175) 
+    
+    
+    Unplaced Nodes
+    -------------
+
+       No unplaced nodes detected.
+    
+    DRC Summary
+    -----------
+
+            0 errors detected
+           39 unconnected pins detected
+            0 unplaced nodes detected
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        
+
+    19-Aug-96  00:27                                                 Page  2

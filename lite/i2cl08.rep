@@ -1,0 +1,559 @@
+
+
+    Bill of Materials                                             I2CL08.S01
+
+                          Tango-Schematic Report Header
+
+    Quantity  Type              Value             Ref Designators
+    ========================================================================
+
+         1    CAP               100n              C7
+         8    CAP               330n              C1,C2,C3,C4,C5,C8,C9,C10
+         8    CONN2                               J1,J3,J4,J5,J6,J7,J8,J9
+         1    CONN3                               J2
+         1    DB10M                               P2
+         1    DB4M                                P1
+         1    DIN64ABM                            P7
+         8    FUSE              VAL               F1,F2,F3,F4,F5,F6,F7,F8
+         8    MOC3022N                            U1,U2,U3,U4,U6,U7,U8,U9
+         1    PCF8574                             U5
+         1    POLCAP            2.2u              C6
+         1    RES               100               R9
+        15    RES               100R              R1,R4,R5,R8,R12,R14,R18,
+                                                  R20,R23,R24,R27,R28,R31,
+                                                  R32,R35
+         8    RES               100R 1W           R2,R6,R10,R15,R21,R25,R29,
+                                                  R33
+         3    RES               1k                R13,R16,R19
+         8    RES               330R              R3,R7,R11,R17,R22,R26,R30,
+                                                  R34
+         1    SWITCH3DIPISOL    VAL               S1
+         8    TRIAC             BT136             Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8
+    
+    Total Parts: 83
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    19-Aug-96  00:32                                                 Page  1
+
+    Library Contents                                               LIGHT.LIB
+
+                          Tango-Schematic Report Header
+
+    ========================================================================
+
+    4N26N             8255              BRIDGE            CAP               
+    DB14M             DB2F              DB3M              DB6M              
+    DIN64ABM          FUSE              LM7805CTB         MOC3022N          
+    NPN               PCF8574           RES               TRIAC             
+    XFMRI             
+    
+    Total Parts: 17
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    19-Aug-96  00:32                                                 Page  1
+
+    Library Contents                                                 MJC.LIB
+
+                          Tango-Schematic Report Header
+
+    ========================================================================
+
+    22V10             2N2222            62C256            74C922            
+    74HC573           80C552            BAT               CAP               
+    CRYSTAL           DB10M             DB14M             DB2F              
+    DB3M              DB4M              DB6M              DB8F              
+    DIODE             GND               GNDANALOG         LM7805CKCA        
+    MAX232            N27C256           NPN               PCF8583           
+    PNP               POLCAP            POT               PUSHBUTTONNO      
+    RES               SWITCH3DIPISOL    VCC               
+    
+    Total Parts: 31
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    19-Aug-96  00:32                                                 Page  2
+
+    Library Contents                                             CONNECT.LIB
+
+                          Tango-Schematic Report Header
+
+    ========================================================================
+
+    7_SEGMENT         CONN1             CONN10F           CONN10M           
+    CONN14F           CONN14M           CONN15F           CONN15M           
+    CONN16F           CONN16M           CONN2             CONN20F           
+    CONN20M           CONN25F           CONN25M           CONN26F           
+    CONN26M           CONN3             CONN34F           CONN34M           
+    CONN37F           CONN37M           CONN40F           CONN40M           
+    CONN50F           CONN50M           CONN60F           CONN60M           
+    CONN64F           CONN64M           CONN96F           CONN96M           
+    CONN9F            CONN9M            CONNF             CONNM             
+    DB15F             DB15M             DB25F             DB25M             
+    DB37F             DB37M             DB50F             DB50M             
+    DB9F              DB9M              DIN(75+3)-F       DIN(75+3)F        
+    DIN(75+3)M        DIN2X32F          DIN2X32M          DIN3X32F          
+    DIN3X32M          EDG10F            EDG10M            EDG16F            
+    EDG16M            EDG20F            EDG20M            EDG26F            
+    EDG26M            EDG34F            EDG34M            EDG36F            
+    EDG36M            EDG40F            EDG40M            EDG50F            
+    EDG50M            EDG60F            EDG60M            EDG62F            
+    EDG62M            EDG64F            EDG64M            IDC2X10F          
+    IDC2X10M          IDC2X13F          IDC2X13M          IDC2X17F          
+    IDC2X17M          IDC2X20F          IDC2X20M          IDC2X25F          
+    IDC2X25M          IDC2X30F          IDC2X30M          IDC2X32F          
+    IDC2X32M          IDC2X5F           IDC2X5M           IDC2X7F           
+    IDC2X7M           IDC2X8F           SINGLEDG          
+    
+    Total Parts: 95
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    19-Aug-96  00:32                                                 Page  3
+
+    Library Contents Description                                   LIGHT.LIB
+
+                          Tango-Schematic Report Header
+
+    Name              Description
+    ========================================================================
+
+    4N26N             Optocoupler
+    8255              Programmable Peripheral Interface
+    BRIDGE            Full Wave Rectifying Bridge
+    CAP               Capacitor
+    DB14M             Boardmount Pin Connector
+    DB2F              Boardmount Pin Connector
+    DB3M              Boardmount Pin Connector
+    DB6M              Boardmount Pin Connector
+    DIN64ABM          DIN 41612 Header
+    FUSE              Fuse
+    LM7805CTB         5 Volt Voltage REGULATOR
+    MOC3022N          Optocoupler/Optoisolator
+    NPN               NPN Transistor
+    PCF8574           Remote 8-bit I/O Expander for iic-bus
+    RES               Resistor
+    TRIAC             TRIAC
+    XFMRI             Transformer, Iron-Core
+    
+    Total Parts: 17
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    19-Aug-96  00:32                                                 Page  1
+
+    Library Contents Description                                     MJC.LIB
+
+                          Tango-Schematic Report Header
+
+    Name              Description
+    ========================================================================
+
+    22V10             Programmable Array Logic
+    2N2222            NPN Transistor
+    62C256            262,144-Bit Static RAM
+    74C922            16 Key Hex Keypad Encoder
+    74HC573           Octal D-Type Transparent LATCHES with 3-State Outputs
+    80C552            80C552 Microcontroller
+    BAT               Battery
+    CAP               Capacitor
+    CRYSTAL           Crystal
+    DB10M             Boardmount Pin Connector
+    DB14M             Boardmount Pin Connector
+    DB2F              Boardmount Pin Connector
+    DB3M              Boardmount Pin Connector
+    DB4M              Boardmount Pin Connector
+    DB6M              Boardmount Pin Connector
+    DB8F              Boardmount Pin Connector
+    DIODE             Diode
+    GND               Ground
+    GNDANALOG         Analog Ground
+    LM7805CKCA        5 Volt Voltage REGULATOR
+    MAX232            RS232 Line Driver/Receiver
+    N27C256           262,144-Bit Surface Mount EPROM
+    NPN               NPN Transistor
+    PCF8583           Clock Calendar with 256X8 Bit RAM
+    PNP               PNP Transistor
+    POLCAP            Polarized Capacitor
+    POT               Potentiometer
+    PUSHBUTTONNO      Push Button, Normally Open
+    RES               Resistor
+    SWITCH3DIPISOL    Three Switch DIP
+    VCC               Power Source
+    
+    Total Parts: 31
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    19-Aug-96  00:32                                                 Page  2
+
+    Library Contents Description                                 CONNECT.LIB
+
+                          Tango-Schematic Report Header
+
+    Name              Description
+    ========================================================================
+
+    7_SEGMENT         DISPLAY
+    CONN1             
+    CONN10F           Female Connector (expanded)
+    CONN10M           Male Connector (expanded)
+    CONN14F           Female Connector (expanded)
+    CONN14M           Male Connector (expanded)
+    CONN15F           Female Connector (expanded)
+    CONN15M           Male Connector (expanded)
+    CONN16F           Female Connector (expanded)
+    CONN16M           Male Connector (expanded)
+    CONN2             
+    CONN20F           Female Connector (expanded)
+    CONN20M           Male Connector (expanded)
+    CONN25F           Female Connector (expanded)
+    CONN25M           Male Connector (expanded)
+    CONN26F           Female Connector (expanded)
+    CONN26M           Male Connector (expanded)
+    CONN3             
+    CONN34F           Female Connector (expanded)
+    CONN34M           Male Connector (expanded)
+    CONN37F           Female Connector (expanded)
+    CONN37M           Male Connector (expanded)
+    CONN40F           Female Connector (expanded)
+    CONN40M           Male Connector (expanded)
+    CONN50F           Female Connector (expanded)
+    CONN50M           Male Connector (expanded)
+    CONN60F           Female Connector (expanded)
+    CONN60M           Male Connector (expanded)
+    CONN64F           Female Connector (expanded)
+    CONN64M           Male Connector (expanded)
+    CONN96F           Female Connector (expanded)
+    CONN96M           Male Connector (expanded)
+    CONN9F            Female Connector (expanded)
+    CONN9M            Male Connector (expanded)
+    CONNF             Female Connector
+    CONNM             Male Connector
+    DB15F             Boardmount Pin Connector
+    DB15M             Boardmount Pin Connector
+    DB25F             Boardmount Pin Connector
+    DB25M             Boardmount Pin Connector
+    DB37F             Boardmount Pin Connector
+    DB37M             Boardmount Pin Connector
+    DB50F             Boardmount Pin Connector
+    DB50M             Boardmount Pin Connector
+    DB9F              Boardmount Pin Connector
+    DB9M              Boardmount Pin Connector
+    DIN(75+3)-F       Boardmount Pin Connector
+    DIN(75+3)F        3x25pin and 3 ac pins
+    DIN(75+3)M        3x25pin and 3 ac pins
+    DIN2X32F          DIN 41612 Boardmount Socket
+
+                          Tango-Schematic Report Footer
+
+    19-Aug-96  00:32                                                 Page  3
+
+    Library Contents Description                                 CONNECT.LIB
+
+                          Tango-Schematic Report Header
+
+    Name              Description
+    ========================================================================
+
+    DIN2X32M          DIN 41612 Header
+    DIN3X32F          DIN 41612 Boardmount Socket
+    DIN3X32M          DIN 41612 Header
+    EDG10F            Card-Edge Connector
+    EDG10M            Card-Edge Connector
+    EDG16F            Card-Edge Connector
+    EDG16M            Card-Edge Connector
+    EDG20F            Card-Edge Connector
+    EDG20M            Card-Edge Connector
+    EDG26F            Card-Edge Connector
+    EDG26M            Card-Edge Connector
+    EDG34F            Card-Edge Connector
+    EDG34M            Card-Edge Connector
+    EDG36F            Card-Edge Connector
+    EDG36M            Card-Edge Connector
+    EDG40F            Card-Edge Connector
+    EDG40M            Card-Edge Connector
+    EDG50F            Card-Edge Connector
+    EDG50M            Card-Edge Connector
+    EDG60F            Card-Edge Connector
+    EDG60M            Card-Edge Connector
+    EDG62F            Card-Edge Connector
+    EDG62M            Card-Edge Connector
+    EDG64F            Card-Edge Connector
+    EDG64M            Card-Edge Connector
+    IDC2X10F          IDC Header
+    IDC2X10M          IDC Header
+    IDC2X13F          IDC Header
+    IDC2X13M          IDC Header
+    IDC2X17F          IDC Header
+    IDC2X17M          IDC Header
+    IDC2X20F          IDC Header
+    IDC2X20M          IDC Header
+    IDC2X25F          IDC Header
+    IDC2X25M          IDC Header
+    IDC2X30F          IDC Header
+    IDC2X30M          IDC Header
+    IDC2X32F          IDC Header
+    IDC2X32M          IDC Header
+    IDC2X5F           IDC Header
+    IDC2X5M           IDC Header
+    IDC2X7F           IDC Header
+    IDC2X7M           IDC Header
+    IDC2X8F           IDC Header
+    SINGLEDG          SINGLE EDGE CONNECTOR
+    
+    Total Parts: 95
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    19-Aug-96  00:32                                                 Page  4
+
+    Design Rule Check                                            CONNECT.LIB
+
+                          Tango-Schematic Report Header
+
+    ========================================================================
+
+    Net GND on sheet I2CL08.S01
+      W U5 pwr pin 8 @  4.015,  6.789 conn.to bi-di. pin.
+    Net VCC on sheet I2CL08.S01
+      W U5 pwr pin 16 @  4.015,  6.789 conn.to bi-di. pin.
+    W unconnected Bi-Direc pin P7:1-A19
+       on sheet I2CL08.S01 @  3.256,  0.489.
+    W unconnected Bi-Direc pin P7:1-A20
+       on sheet I2CL08.S01 @  3.256,  0.489.
+    W unconnected Bi-Direc pin P7:1-A21
+       on sheet I2CL08.S01 @  3.256,  0.489.
+    W unconnected Bi-Direc pin P7:1-A22
+       on sheet I2CL08.S01 @  3.256,  0.489.
+    W unconnected Bi-Direc pin P7:1-A23
+       on sheet I2CL08.S01 @  3.256,  0.489.
+    W unconnected Bi-Direc pin P7:1-A24
+       on sheet I2CL08.S01 @  3.256,  0.489.
+    W unconnected Bi-Direc pin P7:1-A25
+       on sheet I2CL08.S01 @  3.256,  0.489.
+    W unconnected Bi-Direc pin P7:1-A26
+       on sheet I2CL08.S01 @  3.256,  0.489.
+    W unconnected Bi-Direc pin P7:1-A27
+       on sheet I2CL08.S01 @  3.256,  0.489.
+    W unconnected Bi-Direc pin P7:1-A28
+       on sheet I2CL08.S01 @  3.256,  0.489.
+    W unconnected Bi-Direc pin P7:2-B19
+       on sheet I2CL08.S01 @  5.190,  0.489.
+    W unconnected Bi-Direc pin P7:2-B20
+       on sheet I2CL08.S01 @  5.190,  0.489.
+    W unconnected Bi-Direc pin P7:2-B21
+       on sheet I2CL08.S01 @  5.190,  0.489.
+    W unconnected Bi-Direc pin P7:2-B22
+       on sheet I2CL08.S01 @  5.190,  0.489.
+    W unconnected Bi-Direc pin P7:2-B23
+       on sheet I2CL08.S01 @  5.190,  0.489.
+    W unconnected Bi-Direc pin P7:2-B24
+       on sheet I2CL08.S01 @  5.190,  0.489.
+    W unconnected Bi-Direc pin P7:2-B25
+       on sheet I2CL08.S01 @  5.190,  0.489.
+    W unconnected Bi-Direc pin P7:2-B26
+       on sheet I2CL08.S01 @  5.190,  0.489.
+    W unconnected Bi-Direc pin P7:2-B27
+       on sheet I2CL08.S01 @  5.190,  0.489.
+    W unconnected Bi-Direc pin P7:2-B28
+       on sheet I2CL08.S01 @  5.190,  0.489.
+    W unconnected 3State pin U5-13
+       on sheet I2CL08.S01 @  4.015,  6.789.
+
+
+
+
+
+
+                          Tango-Schematic Report Footer
+
+    19-Aug-96  00:32                                                 Page  1

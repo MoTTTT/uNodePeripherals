@@ -1,2 +1,5 @@
 # uNodePeripherals
-Peripherals for the uNode controller
+
+Peripherals, development kits and test code for the uNode
+
+

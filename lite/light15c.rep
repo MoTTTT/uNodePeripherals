@@ -1,0 +1,63 @@
+
+
+    Bill of Materials                                            LIGHT15.PCB
+
+                                        
+
+    Quantity  Type              Value             Ref Designators
+    ========================================================================
+
+        13                                        C6,P1,P5,P7,R3,R7,R11,R17,
+                                                  R22,R26,R30,R34,TRANS8
+         1    CAP               100N              C7
+         8    CAP               330N              C1,C2,C3,C4,C5,C8,C9,C10
+         8    CONN2                               J1,J3,J4,J5,J6,J7,J8,J9
+         1    CONN3                               J2
+         1    DB10M                               P2
+         8    FUSE              VAL               F1,F2,F3,F4,F5,F6,F7,F8
+         8    MOC3022N                            U1,U2,U3,U4,U6,U7,U8,U9
+         1    PCF8574                             U5
+         3    RES               1K                R13,R16,R19
+        16    RES               100R              R1,R4,R5,R8,R9,R12,R14,
+                                                  R18,R20,R23,R24,R27,R28,
+                                                  R31,R32,R35
+         8    RES               100R 1W           R2,R6,R10,R15,R21,R25,R29,
+                                                  R33
+         1    SWITCH3DIPISOL    VAL               S1
+         8    TRIAC             BT136             Q1,Q2,Q3,Q4,Q5,Q6,Q7,Q8
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        
+
+    06-May-99  17:03                                                 Page  1

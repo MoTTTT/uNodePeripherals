@@ -1,0 +1,373 @@
+
+
+    Aperture Information                                         LIGHT15.PCB
+
+                                        
+
+                         Aperture and Tool Descriptions
+    ========================================================================
+
+    Code   Shape    X    Y     Hole  Type   Comment
+    ------------------------------------------------------------------------
+    D10    Ellipse  010  010   000   Draw   70 mil round
+    D11    Ellipse  050  050   000   Draw    50 mil round
+    D12    Sq Rect  060  060   035   Flash  60 mil square
+    D13    Ellipse  060  060   000   Draw    60 mil round
+    D14    Ellipse  010  010   000   Draw    10 mil draw
+    D15    Ellipse  012  012   000   Draw    12 mil draw
+    D16    Ellipse  080  080   035   Both    80 mil round flash
+    D17    Ellipse  090  090   051   Both   90 mil round flash/draw
+    D18    Ellipse  100  100   047   Both    100 mil round flash/draw
+    D19    Ellipse  125  125   047   Both    125 mil
+    D20    Ellipse  012  012   000   Draw   12 mil
+    D21    Ellipse  015  015   000   Draw   15 mil
+    D22    Ellipse  020  020   000   Draw   20 mil
+    D23    Ellipse  025  025   000   Draw   25 mil
+    D24    Ellipse  035  035   000   Draw   35 mil
+    D25    Ellipse  040  040   023   Flash   40 mil round (via)
+    D26    Ellipse  050  050   027   Flash  50 mil round pad
+    D27    Ellipse  060  060   035   Flash  60 mil round pad
+    D28    Ellipse  125  125   059   Flash   125 mil round pad
+    D29    Ellipse  200  200   011   Both   200 mil flash/draw
+    D30    Ellipse  040  040   000   Both   40 F/D WITH HOLE
+    D31    Ellipse  055  075   000   Flash  55 PAD OVAL HORIZONTAL
+    D32    Ellipse  075  055   000   Flash  55 PAD OVAL VERTICAL
+    D33    Ellipse  050  050   000   Both   50 F/D
+    D34    Ellipse  060  060   000   Flash  60 FLASH WITH HOLE
+    D35    Ellipse  075  075   000   Both   75 F/D
+    D36    Ellipse  080  080   000   Flash  80 FLASH WITH HOLE
+    D37    Ellipse  150  150   000   Both   150 F/D
+    D38    Ellipse  175  175   000   Both    175 mil round
+    D70    Ellipse  005  005   000   Draw    5 mil
+    D71    Ellipse  010  010   000   Draw   10 mil draw
+    D72    Thermal  115  115   059   Flash  115 mil thermal
+    D73    Target   200  200   000   Flash  200 mil round flash target
+    D74    Ellipse  002  002   000   Draw    2 MIL DRAW
+    D75    Ellipse  007  007   000   Draw    7 MIL DRAW
+    D76    Ellipse  008  008   000   Draw    8 MIL DRAW
+    D77    Ellipse  013  013   000   Draw    13 MIL DRAW
+    D78    Ellipse  030  030   000   Both   30 F/D
+    D79    Ellipse  125  125   082   Flash   125 mil round pad
+    D80    Ellipse  070  070   039   Flash   70 mil round
+    D81    Sq Rect  070  070   039   Flash   70 mil square
+    D82    Ellipse  080  080   039   Flash   80 mil round flash
+    D83    Mt Hole  175  175   125   Flash  125 mt hole
+    D84    Ellipse  060  060   039   Flash  60mil 39mil flash
+    D85    Sq Rect  060  060   039   Flash  60mil sq 39mil flash
+    D86    Mt Hole  150  150   063   Flash  70 mil round
+    D87    Mt Hole  080  080   047   Flash  55 PAD OVAL HORIZONTAL
+    D88    Mt Hole  150  150   118   Flash  70 mil round
+
+                                        
+
+    10-May-99  14:11                                                 Page  1
+
+    Aperture Information                                         LIGHT15.PCB
+
+                                        
+
+                         Aperture and Tool Descriptions
+    ========================================================================
+
+    Code   Shape    X    Y     Hole  Type   Comment
+    ------------------------------------------------------------------------
+    D89    Mt Hole  150  150   059   Flash  70 mil round
+    D90    Mt Hole  150  150   126   Flash  70 mil round
+    D91    Ellipse  024  024   000   Draw   70 mil round
+    
+
+
+    Code   Hole Diameter
+    --------------------
+    T01    023
+    T02    031
+    T03    035
+    T04    039
+    T05    043
+    T06    047
+    T07    051
+    T08    055
+    T09    059
+    T11    066
+    T12    070
+    T13    074
+    T14    078
+    T15    082
+    T16    086
+    T17    090
+    T18    094
+    T19    098
+    T20    102
+    T21    106
+    T22    110
+    T23    114
+    T24    118
+    T25    122
+    T26    125
+    T27    129
+    T28    133
+    T29    137
+    T30    141
+    T31    145
+    T32    149
+    T33    153
+    T34    157
+    T35    161
+    T36    165
+    T37    169
+    T38    173
+    T39    177
+    T40    181
+    T41    185
+
+                                        
+
+    10-May-99  14:11                                                 Page  2
+
+    Aperture Information                                         LIGHT15.PCB
+
+                                        
+
+                         Aperture and Tool Descriptions
+    ========================================================================
+
+    Code   Hole Diameter
+    --------------------
+    T42    189
+    T43    192
+    T44    196
+    T45    200
+    T46    204
+    T47    208
+    T48    212
+    T49    216
+    T50    220
+    T51    224
+    T52    228
+    T53    232
+    T54    236
+    T55    240
+    T56    244
+    T57    248
+    T58    028
+    T59    063
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        
+
+    10-May-99  14:11                                                 Page  3
+
+    Aperture Information                                         LIGHT15.PCB
+
+                                        
+
+                          Aperture and Tool Assignments
+    ========================================================================
+
+    Item                     Normal  S Mask   Plane   Thermal  Drl Sym  Tool
+    ------------------------------------------------------------------------
+    DRAW APERTURE            D29      -        -       -        -        -
+    LINE_010                 D71      -        -       -        -        -
+    LINE_012                 D20      -        -       -        -        -
+    LINE_014                 D20      -        -       -        -        -
+    LINE_016                 D21      -        -       -        -        -
+    LINE_020                 D22      -        -       -        -        -
+    LINE_030                 D78      -        -       -        -        -
+    LINE_040                 D10      -        -       -        -        -
+    LINE_048                  *       -        -       -        -        -
+    LINE_080                 DRAW     -        -       -        -        -
+    P_EL_0060_0060_020_AL    D27     D27      D27     DRAW      -        -
+    P_EL_0060_0060_034_AL    D27     D27      D27     DRAW      -        -
+    P_EL_0060_0060_038_AL    D27     D27      D27     DRAW      -        -
+    P_EL_0070_0090_030_AL     *       *        *       *        -        -
+    P_EL_0080_0060_020_AL     *       *        *       *        -        -
+    P_EL_0080_0060_034_AL     *       *        *       *        -        -
+    P_EL_0080_0080_030_AL    D16     D16      D16     DRAW      -        -
+    P_MH_0120_0120_060_AL     *       -        *       -        -        -
+    P_MH_0156_0156_110_AL    DRAW     -       D37      -        -        -
+    P_OV_0150_0110_030_AL     *       *        *       *        -        -
+    P_OV_0150_0120_030_AL     *       *        *       *        -        -
+    P_RR_0100_0080_038_AL     *       *        *       *        -        -
+    P_RR_0150_0110_044_AL     *       *        *       *        -        -
+    P_SQ_0060_0060_020_AL    D12     D12      D12     D12       -        -
+    P_SQ_0060_0060_034_AL    D12     D12      D12     D12       -        -
+    P_SQ_0060_0060_038_AL    D12     D12      D12     D12       -        -
+    P_SQ_0070_0090_030_AL     *       *        *       *        -        -
+    P_SQ_0080_0060_020_AL     *       *        *       *        -        -
+    P_SQ_0100_0080_038_AL     *       *        *       *        -        -
+    HOLE_020                  -       -        -       -       DRAW     T01
+    HOLE_030                  -       -        -       -       DRAW     T02
+    HOLE_034                  -       -        -       -       DRAW     T03
+    HOLE_038                  -       -        -       -       DRAW     T04
+    HOLE_044                  -       -        -       -        *        * 
+    HOLE_060                  -       -        -       -       DRAW     T09
+    HOLE_110                  -       -        -       -       DRAW     T22
+    
+
+    - : Not applicable.                   * : Aperture/tool is not assigned.
+
+
+
+
+
+
+
+
+
+
+                                        
+
+    10-May-99  14:11                                                 Page  4
+
+    PCB Statistics                                               LIGHT15.PCB
+
+                                        
+
+    ========================================================================
+
+    Arcs:     29     Components:      84     Pads:   281     Polygons:    16
+    Lines:   918     Text strings:   193     Vias:     0     Holes:      281
+
+    ------------------------------------------------------------------------
+
+    Text Summary -        T_0060_010_0:     7
+                          T_0060_010_1:   124
+                          T_0060_010_2:     2
+                          T_0060_010_3:    33
+                          T_0060_014_0:     7
+                          T_0060_014_4:     2
+                          T_0060_020_0:     8
+                          T_0200_040_0:     9
+                          T_0200_040_4:     1
+    
+    Line Summary -        L_010:   323
+                          L_012:   261
+                          L_014:     1
+                          L_016:   135
+                          L_020:    29
+                          L_030:    56
+                          L_048:   120
+                          L_080:    22
+    
+    Pad Summary  -        P_EL_0060_0060_020_AL:   104
+                          P_EL_0060_0060_034_AL:     3
+                          P_EL_0060_0060_038_AL:    38
+                          P_EL_0070_0090_030_AL:    16
+                          P_EL_0080_0060_020_AL:     1
+                          P_EL_0080_0060_034_AL:     9
+                          P_EL_0080_0080_030_AL:    32
+                          P_MH_0120_0120_060_AL:     2
+                          P_MH_0156_0156_110_AL:     2
+                          P_OV_0150_0110_030_AL:     1
+                          P_OV_0150_0120_030_AL:    18
+                          P_RR_0100_0080_038_AL:     3
+                          P_RR_0150_0110_044_AL:    16
+                          P_SQ_0060_0060_020_AL:    22
+                          P_SQ_0060_0060_034_AL:     2
+                          P_SQ_0060_0060_038_AL:     2
+                          P_SQ_0070_0090_030_AL:     8
+                          P_SQ_0080_0060_020_AL:     1
+                          P_SQ_0100_0080_038_AL:     1
+    
+    Hole Summary -        H_020:   128
+                          H_030:    75
+                          H_034:    14
+                          H_038:    44
+                          H_044:    16
+                          H_060:     2
+                          H_110:     2
+
+                                        
+
+    10-May-99  14:11                                                 Page  1
+
+    PCB Statistics                                               LIGHT15.PCB
+
+                                        
+
+    ========================================================================
+
+    
+    Plane Connections -   Power Thermals:      0
+                          Power Directs:       0
+                          Ground Thermals:     0
+                          Ground Directs:      0
+    
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                                        
+
+    10-May-99  14:11                                                 Page  2
